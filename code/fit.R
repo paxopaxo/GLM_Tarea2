@@ -48,17 +48,14 @@ m_qpois <- glm(count ~ hour + temp + humidity + wind +
 drop1(m_qpois, test = "F")
 
 m_qpois_nulo <- glm(count ~ 1, family = quasipoisson(link = "log"), data = bike_data)
-
 anova(m_qpois_nulo, m_qpois, test = "F")
+
+summary(m_qpois)
 
 # Multicolinealidad
 vif(m_qpois)
 
-
-
-
-
-### esto hay que validarlo. 
+### esto hay que validarlo, pero deberia ser evidencia suficiente para elegir quasi-poisson
 
 # Agrupar en 15 cuantiles según la media predicha
 df_var <- data.frame(
