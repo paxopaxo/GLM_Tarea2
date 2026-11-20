@@ -1,5 +1,7 @@
 library(dplyr)
 library(ggplot2)
+library(tidyverse)
+library(corrplot)
 
 bike_data <- read.csv(
   "data/SeoulBikeData.csv",
@@ -29,12 +31,18 @@ dias <- dias_mixtos %>%
 # El dia 6/10/2018 es la única intermitencia 
 dias
 
+#variables numericas
+num_vars <- bike_data %>%
+  select(count, temp, humidity, dew_point, wind, visibility, solar_rad, rainfall, snowfall)
 
+#matriz de correlacion pearson
+cor_mat <- cor(num_vars, method = "pearson")
+corrplot(cor_mat, method = "color", type = "lower", addCoef.col = "black", number.cex = 0.75, tl.col = "black")
 
 # Eliminamos cuando no no está funcionando
 bike_data <- bike_data %>% 
   filter(functioning_day == "Yes") %>%
-  select(-functioning_day)
+  select(-functioning_day, -dew_point)
 
 # cantidad bicis por hora 
 ggplot(bike_data, aes(x = factor(hour), y = count)) +
