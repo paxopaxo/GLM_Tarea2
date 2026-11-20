@@ -18,6 +18,18 @@ bike_data %>%
   select(date, hour, count, rain, snow, mu_hat, pearson_sq) %>%
   head(5)
 
+# quasi-poisson
+m_qpois <- glm(count ~ hour + temp + humidity + wind + visibility +
+                 solar_rad + rain + snow + seasons + holiday,
+               family = quasipoisson(link = "log"),
+               data = bike_data)
+
+summary(m_qpois)
+
+# Multicolinealidad
+vif(m_qpois)
+
+# binomial negativo
 m_nb <- glm.nb(count ~ hour + temp + humidity + wind + visibility +
                  solar_rad + rain + snow + seasons + holiday,
                data = bike_data)
