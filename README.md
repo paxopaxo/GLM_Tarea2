@@ -24,7 +24,6 @@ El conjunto de datos cuenta con **8.760 observaciones horarias** ( 365 días com
 3. **Evaluación de sobredispersión:** bla bla
 
 ---
-
 ### 4. Estructura del Repositorio
 * `data/` — Base de datos original (`SeoulBikeData.csv`).
-* por ver.. 
+* `code/` — Scripts de R con el análisis exploratorio, limpieza de variables y ajuste de modelos GLM.

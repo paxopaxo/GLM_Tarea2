@@ -2,6 +2,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyverse)
 library(corrplot)
+select <- dplyr::select
 
 bike_data <- read.csv(
   "data/SeoulBikeData.csv",
@@ -15,6 +16,37 @@ names(bike_data) <- c(
   "visibility", "dew_point", "solar_rad", "rainfall",
   "snowfall", "seasons", "holiday", "functioning_day"
 )
+# notar que rainfall y snowfall son 0 hasta el tercer cuantil 
+summary(bike_data)
+
+# Ver cuantas horas tienen lluvia y nieve al mismo tiempo
+sum(bike_data$rainfall > 0 & bike_data$snowfall > 0)
+
+bike_data %>%
+  mutate(weather_state = case_when(
+    snowfall > 0 ~ "Nieve (> 0 cm)",
+    rainfall > 0 ~ "LLuvia (> 0 mm)",
+    TRUE         ~ "Seco (0)"
+  )) %>%
+  group_by(weather_state) %>%
+  summarise(n = n()) %>%
+  mutate(pct = n / sum(n) * 100) %>%
+  ggplot(aes(x = weather_state, y = pct, fill = weather_state)) +
+  geom_col(width = 0.55, show.legend = FALSE) +
+  geom_text(aes(label = sprintf("%.1f%% (%d hrs)", pct, n)), vjust = -0.4) +
+  ylim(0, 105) +
+  labs(
+    title = "Distribution of Precipitation States in Seoul Bike Data",
+    x = NULL,
+    y = "Percentage of Hours (%)"
+  ) +
+  theme_minimal(base_size = 12)
+
+bike_data <- bike_data %>%
+  mutate(
+    rain = factor(ifelse(rainfall > 0, "Yes", "No")),
+    snow = factor(ifelse(snowfall > 0, "Yes", "No"))
+  )
 
 table(bike_data$functioning_day)
 
@@ -39,8 +71,10 @@ num_vars <- bike_data %>%
 cor_mat <- cor(num_vars, method = "pearson")
 corrplot(cor_mat, method = "color", type = "lower", addCoef.col = "black", number.cex = 0.75, tl.col = "black")
 
+
 # Eliminamos cuando no no está funcionando
 bike_data <- bike_data %>% 
+  mutate( hour = factor(hour) ) %>% 
   filter(functioning_day == "Yes") %>%
   select(-functioning_day, -dew_point)
 
@@ -75,8 +109,6 @@ ggplot(bike_data, aes(x = cut_number(temp, 10), y = count)) +
   geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
   labs(title = "Bicicletas arrendadas por rango de temperatura", x = "Temperatura (°C)", y = "Cantidad") +
   theme_minimal()
-
-cor(bike_data$temp, bike_data$dew_point)
 
 # segun humedad
 ggplot(bike_data, aes(x = cut_number(humidity, 10), y = count)) +
