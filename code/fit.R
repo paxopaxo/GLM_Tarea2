@@ -55,26 +55,22 @@ summary(m_qpois)
 # Multicolinealidad
 vif(m_qpois)
 
-### esto hay que validarlo, pero deberia ser evidencia suficiente para elegir quasi-poisson
-
+### evidencia suficiente para elegir quasi-poisson
+#############################################
 # Agrupar en 15 cuantiles según la media predicha
 df_var <- data.frame(
   mu_hat = fitted(m_qpois),
   res_sq = (bike_data$count - fitted(m_qpois))^2
 )
-
 df_var$grupo <- cut(
   df_var$mu_hat,
   breaks = quantile(df_var$mu_hat, probs = seq(0, 1, length.out = 16)),
   include.lowest = TRUE
 )
-
 resumen_var <- aggregate(cbind(mu_hat, res_sq) ~ grupo, data = df_var, FUN = mean)
-
 # Parámetros estimados
 phi_hat   <- summary(m_qpois_0)$dispersion
 theta_hat <- m_nb$theta
-
 # Gráfico comparativo con las 3 estructuras de varianza
 plot(resumen_var$mu_hat, resumen_var$res_sq, pch = 19,
      ylim = c(0, max(resumen_var$res_sq) * 1.05),
@@ -98,6 +94,8 @@ legend("topleft",
        ),
        col = c("darkgreen", "blue", "red"),
        lwd = 2, lty = c(3, 1, 2), bty = "n")
+#############################
+
 
 #ajuste de midelos con interacciones
 m_int_hour_hol  <- update(m_qpois, . ~ . + hour:holiday)
