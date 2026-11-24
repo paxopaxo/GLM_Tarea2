@@ -78,6 +78,18 @@ bike_data <- bike_data %>%
   filter(functioning_day == "Yes") %>%
   select(-functioning_day, -dew_point)
 
+# Día de la semana como factor (uso de wday() para ser independiente del locale del sistema)
+# wday con week_start=1 -> 1=Lunes, 7=Domingo
+bike_data <- bike_data %>%
+  mutate(
+    date_dt = as.Date(date, format = "%d/%m/%Y"),
+    weekday = factor(
+      wday(date_dt, week_start = 1),
+      levels = 1:7,
+      labels = c("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo")
+    )
+  )
+
 # cantidad bicis por hora 
 ggplot(bike_data, aes(x = factor(hour), y = count)) +
   geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
@@ -98,6 +110,12 @@ ggplot(bike_data, aes(x = seasons, y = count)) +
 ggplot(bike_data, aes(x = holiday, y = count)) +
   geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
   labs(title = "Bicicletas arrendadas según día feriado", x = "Feriado", y = "Cantidad") +
+  theme_minimal()
+
+# segun dia de la semana
+ggplot(bike_data, aes(x = weekday, y = count)) +
+  geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
+  labs(title = "Bicicletas arrendadas por día de la semana", x = "Día de la semana", y = "Cantidad") +
   theme_minimal()
 
 

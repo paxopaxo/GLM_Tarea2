@@ -2,7 +2,7 @@ library(MASS)
 library(car)
 
 m_pois <- glm(count ~ hour + temp + humidity + wind + visibility +
-                solar_rad + seasons + holiday+ rain + snow,
+                solar_rad + seasons + holiday + rain + snow + weekday,
               family = poisson(link = "log"), data = bike_data)
 summary(m_pois)
 
@@ -20,7 +20,7 @@ bike_data %>%
 
 # binomial negativo
 m_nb <- glm.nb(count ~ hour + temp + humidity + wind + visibility +
-                 solar_rad + rain + snow + seasons + holiday,
+                 solar_rad + rain + snow + seasons + holiday + weekday,
                data = bike_data)
 
 summary(m_nb)
@@ -30,7 +30,7 @@ vif(m_nb)
 
 # quasi-poisson
 m_qpois_0 <- glm(count ~ hour + temp + humidity + wind + visibility +
-                   solar_rad + rain + snow + seasons + holiday,
+                   solar_rad + rain + snow + seasons + holiday + weekday,
                  family = quasipoisson(link = "log"),
                  data = bike_data)
 
@@ -40,9 +40,9 @@ summary(m_qpois_0)
 # visibility no aporta significativamente
 drop1(m_qpois_0, test = "F")
 
-# quasi-poisson sin visibility
+# quasi-poisson sin visibility (drop1 arriba lo confirma)
 m_qpois <- glm(count ~ hour + temp + humidity + wind +
-                 solar_rad + rain + snow + seasons + holiday,
+                 solar_rad + rain + snow + seasons + holiday + weekday,
                family = quasipoisson(link = "log"),
                data = bike_data)
 drop1(m_qpois, test = "F")
