@@ -142,23 +142,13 @@ tabla_F0[order(-tabla_F0$`F value`), c("Df", "Deviance", "F value", "Pr(>F)")]
 
 ############## Seleccion hacia adelante entre las candidatas
 # Criterio: en cada paso se agrega la candidata con mayor F (vs. el modelo actual),
-# siempre que p < alfa y el QAIC baje.
-
-# phi de referencia: modelo con todas las candidatas (el mas grande)
-m_cand <- update(m_qpois, as.formula(paste(". ~ . +", paste(candidatas, collapse = " + "))))
-phi_ref <- summary(m_cand)$dispersion
-
-qaic <- function(mod_qpois, phi_g) {
-  mod_p <- update(mod_qpois, family = poisson(link = "log"))
-  k     <- length(coef(mod_qpois)) + 1
-  -2 * as.numeric(logLik(mod_p)) / phi_g + 2 * k
-}
+# siempre que su p-valor sea < alfa. Si la mejor candidata no lo cumple, se detiene.
 
 alfa <- 0.05
 m_act <- m_qpois
 restantes <- candidatas
 pasos <- data.frame(Paso = 0, Agregada = "(base)", Df_Extra = NA, F_stat = NA,
-                    p_valor = NA, QAIC = round(qaic(m_act, phi_ref), 1))
+                    p_valor = NA)
 
 repeat {
   if (length(restantes) == 0) break
@@ -167,16 +157,14 @@ repeat {
   a <- a[rownames(a) != "<none>", ]
   mejor <- rownames(a)[which.max(a$`F value`)]
   m_new <- update(m_act, as.formula(paste(". ~ . +", mejor)))
-  q_old <- qaic(m_act, phi_ref); q_new <- qaic(m_new, phi_ref)
   p_mejor <- a[mejor, "Pr(>F)"]
-  if (p_mejor >= alfa || q_new >= q_old) break
+  if (p_mejor >= alfa) break
   m_act <- m_new
   restantes <- setdiff(restantes, mejor)
   pasos <- rbind(pasos, data.frame(Paso = nrow(pasos), Agregada = mejor,
                                    Df_Extra = a[mejor, "Df"],
                                    F_stat = round(a[mejor, "F value"], 2),
-                                   p_valor = signif(p_mejor, 3),
-                                   QAIC = round(q_new, 1)))
+                                   p_valor = signif(p_mejor, 3)))
 }
 print(pasos, row.names = FALSE)
 
