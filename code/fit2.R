@@ -215,24 +215,56 @@ acf(residuals(m_fwd, type = "pearson"), main = "D. Autocorrelación Temporal (AC
 
 par(mfrow = c(1, 1))
 
+# A2. Mismo grafico, agrupado en bins con igual numero de observaciones.
+#     En A hay pocos puntos con eta bajo y es dificil ver una tendencia. Aqui cada punto
+#     es el promedio de ~n/30 observaciones, con barras de +-2 errores estandar:
+#     si el modelo ajusta bien, los promedios deben estar cerca de 0 y sin forma.
+n_bins <- 30
+bins <- cut(eta_hat, breaks = unique(quantile(eta_hat, probs = seq(0, 1, length.out = n_bins + 1))),
+            include.lowest = TRUE)
+bin_df <- data.frame(
+  eta = tapply(eta_hat, bins, mean),
+  res = tapply(res_dev_std, bins, mean),
+  se  = tapply(res_dev_std, bins, function(x) sd(x) / sqrt(length(x)))
+)
+
+plot(bin_df$eta, bin_df$res, pch = 16, col = "darkblue",
+     ylim = range(bin_df$res - 2 * bin_df$se, bin_df$res + 2 * bin_df$se),
+     xlab = expression("Predictor lineal (" * hat(eta) * "), promedio por bin"),
+     ylab = "Residuo estandarizado promedio",
+     main = "A2. Residuos Promedio por Bin del Predictor Lineal")
+arrows(bin_df$eta, bin_df$res - 2 * bin_df$se, bin_df$eta, bin_df$res + 2 * bin_df$se,
+       angle = 90, code = 3, length = 0.03, col = "darkblue")
+abline(h = 0, col = "red", lty = 2)
+lines(bin_df$eta, bin_df$res, col = "darkorange", lwd = 2)
+
 
 ############## Observaciones influyentes y sensibilidad
 
 # Top 5 observaciones con mayor distancia de Cook
-top_influyentes <- order(cooks_d, decreasing = TRUE)[1:5]
+top_influyentes <- order(cooks_d, decreasing = TRUE)[1:10]
 cbind(bike_data[top_influyentes, c("date", "hour", "count", "temp", "rain", "snow", "seasons")],
       mu_hat  = round(fitted(m_fwd)[top_influyentes], 1),
       res_std = round(res_dev_std[top_influyentes], 2),
       cook    = round(cooks_d[top_influyentes], 5))
 
-# Reajustar sin esas 5 observaciones y comparar coeficientes
+# Reajustar sin las observaciones influyentes y comparar coeficientes
 m_fwd_sin_inf <- update(m_fwd, subset = -top_influyentes)
 
+# Diferencia absoluta (escala log) de cada coeficiente entre el modelo con todos los datos
+# y el modelo sin las observaciones influyentes. Los coeficientes no estimables (NA, por
+# ejemplo en hour:solar_rad) se ignoran con na.rm = TRUE.
+
 dif_coef <- abs(coef(m_fwd) - coef(m_fwd_sin_inf))
-cat("Máxima diferencia absoluta en coeficientes al quitar top 5 influyentes:",
-    round(max(dif_coef), 4), "(", names(which.max(dif_coef)), ")\n")
+cat("Máxima diferencia absoluta en coeficientes al quitar top", length(top_influyentes),
+    "influyentes:", round(max(dif_coef, na.rm = TRUE), 4),
+    "(", names(which.max(dif_coef)), ")\n")
+
+# Los 5 coeficientes que mas cambian (exp(dif) - 1 = cambio relativo en la razon de tasas)
+mas_cambian <- sort(dif_coef, decreasing = TRUE)[1:5]
+print(round(data.frame(Dif_abs = mas_cambian, Cambio_rel_pct = 100 * (exp(mas_cambian) - 1)), 4))
 cat("Phi_hat original:", round(summary(m_fwd)$dispersion, 2),
-    "| Phi_hat sin top 5:", round(summary(m_fwd_sin_inf)$dispersion, 2), "\n")
+    "| Phi_hat sin top", length(top_influyentes), ":", round(summary(m_fwd_sin_inf)$dispersion, 2), "\n")
 
 
 ############## Validacion cruzada por bloques (dias completos): descartar sobreajuste
@@ -242,22 +274,26 @@ cat("Phi_hat original:", round(summary(m_fwd)$dispersion, 2),
 # Bloques = dias completos: las 24 horas de un dia se parecen entre si, asi que
 # repartirlas al azar entre train y test haria el error artificialmente bajo.
 
+# ---- Parametros editables de la validacion cruzada 
+semilla_cv <- 123   # semilla
+k_pliegues <- 10    # bloques de dias
+
 modelos_cv <- list(
   "Base (sin interacciones)" = m_qpois,
   "Final (m_fwd)"            = m_fwd
 )
 
-# Pliegues por bloques: cada dia completo se asigna a uno de 10 pliegues
-set.seed(123)
+# Pliegues por bloques: cada dia completo se asigna a uno de k_pliegues pliegues
+set.seed(semilla_cv)
 dias_unicos <- unique(bike_data$date)
-folds_dias  <- sample(rep(1:10, length.out = length(dias_unicos)))
+folds_dias  <- sample(rep(1:k_pliegues, length.out = length(dias_unicos)))
 names(folds_dias) <- dias_unicos
 folds_por_dia <- folds_dias[as.character(bike_data$date)]
 
-# Reajusta cada modelo en 10 vueltas; devuelve RMSE y MAE promedio sobre los pliegues de test
+# Reajusta cada modelo en k_pliegues vueltas; devuelve RMSE y MAE promedio sobre los pliegues de test
 cv_bloques <- function(modelos, folds) {
   res <- sapply(modelos, function(mod) {
-    err <- sapply(1:10, function(k) {
+    err <- sapply(1:k_pliegues, function(k) {
       tr <- bike_data[folds != k, ]
       te <- bike_data[folds == k, ]
       p  <- predict(update(mod, data = tr), newdata = te, type = "response")
