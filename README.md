@@ -34,8 +34,6 @@ En `main.R` se eliminan las horas en que el servicio no estaba operativo (`Funct
     * Deja en memoria el modelo base `m_qpois` y el modelo final `m_fwd`.
   * `seed_cv.R` — Función `seed_cv()`: repite la validación cruzada por días con varias semillas para verificar que el resultado no depende de cómo se reparten los días en los pliegues.
 * `doc/` — Documentos anexos.
-* `SESION2.md` — Documentación detallada de `fit2.R` y `seed_cv.R`: criterios, resultados, decisiones y limitaciones.
-* `SESION_fit2.md` — Documentación de una versión **anterior** de la selección de interacciones (criterio por F, ya no se usa).
 
 ---
 ### 4. Orden de Ejecución
