@@ -116,21 +116,18 @@ screening_int <- do.call(rbind, lapply(int_terms, function(x) {
     Significativa = tst$`Pr(>F)`[2] < 0.05
   )
 }))
-# Ordenado por F_stat
-screening_int <- screening_int[order(-screening_int$F_stat), ]
+# Ordenado por p-valor
+screening_int <- screening_int[order(+screening_int$p_valor), ]
 print(screening_int, row.names = FALSE)
 
-############## Preseleccion de candidatas segun F_stat
-# F_stat >= 50: las 8 mejores. Despues viene hour:temp (F = 35.8), mucho mas abajo.
-umbral_F  <- 50
-candidatas <- screening_int$Interaccion[screening_int$F_stat >= umbral_F]
-candidatas
-
-# Se agregan a mano las interacciones con hour que salieron significativas (p < 0.05)
-# en el screening. El corte F >= 50 las dejaba fuera porque cuestan muchos gl, pero
-# m_3int (fit.R) mostro que en CV por dias si valen la pena.
-candidatas <- unique(c(screening_int$Interaccion[screening_int$F_stat >= umbral_F],
-                       "hour:temp", "hour:solar_rad"))
+############## Preseleccion de candidatas: significancia + relevancia practica
+# Una interaccion es candidata si cumple ambas condiciones (cada una probada sola vs. m_qpois):
+#  1. p-valor del test F < 0.05: el efecto es real (estadisticamente significativo del anova).
+#  2. Reduce la devianza del modelo base en al menos un 2%: el efecto importa en la practica.
+alfa_screening <- 0.05
+umbral_dev     <- 2   # en %
+candidatas <- screening_int$Interaccion[screening_int$p_valor < alfa_screening &
+                                          screening_int$Red_Dev_Pct >= umbral_dev]
 candidatas
 
 # Tabla de F de las candidatas contra el modelo base (un solo add1, rapido)
