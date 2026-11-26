@@ -138,30 +138,49 @@ tabla_F0[order(-tabla_F0$`F value`), c("Df", "Deviance", "F value", "Pr(>F)")]
 
 
 ############## Seleccion hacia adelante entre las candidatas
-# Criterio: en cada paso se agrega la candidata con mayor F (vs. el modelo actual),
-# siempre que su p-valor sea < alfa. Si la mejor candidata no lo cumple, se detiene.
+# Mismo criterio que el screening, pero cada candidata se prueba contra el modelo ACTUAL
+# (que ya incluye las interacciones agregadas antes):
+#  - Son elegibles las que tienen p-valor < alfa Y reducen la devianza del modelo actual
+#    en al menos umbral_dev %.
+#  - Entre las elegibles entra la de menor p-valor (no la de mayor F, que no es comparable
+#    entre terminos con distintos gl).
+#  - Si ninguna es elegible, se detiene.
+# El p-valor se compara en escala log porque los mas fuertes dan 0 por underflow (empates).
 
 alfa <- 0.05
 m_act <- m_qpois
 restantes <- candidatas
-pasos <- data.frame(Paso = 0, Agregada = "(base)", Df_Extra = NA, F_stat = NA,
-                    p_valor = NA)
+pasos <- data.frame(Paso = 0, Agregada = "(base)", Df_Extra = NA, Red_Dev_Pct = NA,
+                    F_stat = NA, log10_p = NA)
 
 repeat {
   if (length(restantes) == 0) break
-  a <- add1(m_act, scope = as.formula(paste("~ . +", paste(restantes, collapse = " + "))),
-            test = "F")
-  a <- a[rownames(a) != "<none>", ]
-  mejor <- rownames(a)[which.max(a$`F value`)]
-  m_new <- update(m_act, as.formula(paste(". ~ . +", mejor)))
-  p_mejor <- a[mejor, "Pr(>F)"]
-  if (p_mejor >= alfa) break
-  m_act <- m_new
-  restantes <- setdiff(restantes, mejor)
-  pasos <- rbind(pasos, data.frame(Paso = nrow(pasos), Agregada = mejor,
-                                   Df_Extra = a[mejor, "Df"],
-                                   F_stat = round(a[mejor, "F value"], 2),
-                                   p_valor = signif(p_mejor, 3)))
+  # Test F de cada candidata restante contra el modelo actual (igual que en el screening)
+  evals <- do.call(rbind, lapply(restantes, function(x) {
+    mod <- update(m_act, as.formula(paste(". ~ . +", x)))
+    tst <- anova(m_act, mod, test = "F")
+    data.frame(Interaccion = x,
+               Df_Extra    = tst$Df[2],
+               Red_Dev_Pct = 100 * tst$Deviance[2] / deviance(m_act),
+               F_stat      = tst$F[2],
+               log10_p     = pf(tst$F[2], tst$Df[2], df.residual(mod),
+                                lower.tail = FALSE, log.p = TRUE) / log(10))
+  }))
+  elegibles <- evals[evals$log10_p < log10(alfa) & evals$Red_Dev_Pct >= umbral_dev, ]
+  if (nrow(elegibles) == 0) {
+    cat("Forward se detiene. Ninguna candidata restante cumple p <", alfa,
+        "y reduccion de devianza >=", umbral_dev, "%:\n")
+    print(evals[order(-evals$Red_Dev_Pct), ], row.names = FALSE)
+    break
+  }
+  mejor <- elegibles[which.min(elegibles$log10_p), ]
+  m_act <- update(m_act, as.formula(paste(". ~ . +", mejor$Interaccion)))
+  restantes <- setdiff(restantes, mejor$Interaccion)
+  pasos <- rbind(pasos, data.frame(Paso = nrow(pasos), Agregada = mejor$Interaccion,
+                                   Df_Extra = mejor$Df_Extra,
+                                   Red_Dev_Pct = round(mejor$Red_Dev_Pct, 2),
+                                   F_stat = round(mejor$F_stat, 2),
+                                   log10_p = round(mejor$log10_p, 1)))
 }
 print(pasos, row.names = FALSE)
 
@@ -238,7 +257,7 @@ lines(bin_df$eta, bin_df$res, col = "darkorange", lwd = 2)
 
 ############## Observaciones influyentes y sensibilidad
 
-# Top 5 observaciones con mayor distancia de Cook
+# Top 10 observaciones con mayor distancia de Cook
 top_influyentes <- order(cooks_d, decreasing = TRUE)[1:10]
 cbind(bike_data[top_influyentes, c("date", "hour", "count", "temp", "rain", "snow", "seasons")],
       mu_hat  = round(fitted(m_fwd)[top_influyentes], 1),
@@ -249,8 +268,8 @@ cbind(bike_data[top_influyentes, c("date", "hour", "count", "temp", "rain", "sno
 m_fwd_sin_inf <- update(m_fwd, subset = -top_influyentes)
 
 # Diferencia absoluta (escala log) de cada coeficiente entre el modelo con todos los datos
-# y el modelo sin las observaciones influyentes. Los coeficientes no estimables (NA, por
-# ejemplo en hour:solar_rad) se ignoran con na.rm = TRUE.
+# y el modelo sin las observaciones influyentes. na.rm = TRUE por si algun coeficiente
+# no es estimable (NA); con el modelo final actual no hay ninguno.
 
 dif_coef <- abs(coef(m_fwd) - coef(m_fwd_sin_inf))
 cat("Máxima diferencia absoluta en coeficientes al quitar top", length(top_influyentes),
