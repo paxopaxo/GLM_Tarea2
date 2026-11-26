@@ -17,14 +17,7 @@ El conjunto de datos cuenta con **8.760 observaciones horarias** ( 365 días com
 > *¿Cómo influyen las condiciones meteorológicas y temporales en la cantidad esperada de bicicletas arrendadas por hora?*
 
 ---
-
-### 3. Estrategia de Modelamiento
-1. **Depuración de datos:** bla bla
-2. **Modelo base:** bla bla 
-3. **Evaluación de sobredispersión:** bla bla
-
----
-### 4. Estructura del Repositorio
+### 3. Estructura del Repositorio
 * `data/` — Base de datos original (`SeoulBikeData.csv`).
 * `code/` — Scripts de R con el análisis exploratorio, limpieza de variables y ajuste de modelos GLM.
 * `doc/` — Documentos anexos
