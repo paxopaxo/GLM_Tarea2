@@ -332,3 +332,65 @@ print(tabla_cv, row.names = FALSE)
 #   terminos relativos y comparable a la del modelo base (que tiene muchos menos parametros).
 # - Ademas, el RMSE/MAE de CV del modelo final debe ser menor que el de la base: la
 #   mejora se mantiene en dias no vistos, no solo en entrenamiento.
+
+
+############## 1. Gráfico media-varianza sobre el modelo final (m_fwd)
+df_var_fwd <- data.frame(
+  mu_hat = fitted(m_fwd),
+  res_sq = (bike_data$count - fitted(m_fwd))^2
+)
+df_var_fwd$grupo <- cut(
+  df_var_fwd$mu_hat,
+  breaks = quantile(df_var_fwd$mu_hat, probs = seq(0, 1, length.out = 16)),
+  include.lowest = TRUE
+)
+resumen_var_fwd <- aggregate(cbind(mu_hat, res_sq) ~ grupo, data = df_var_fwd, FUN = mean)
+
+phi_fwd <- summary(m_fwd)$dispersion
+# Ajustamos NB con la misma fórmula de m_fwd solo para comparar la curva cuadrática
+m_nb_fwd <- glm.nb(formula(m_fwd), data = bike_data)
+theta_fwd <- m_nb_fwd$theta
+
+plot(resumen_var_fwd$mu_hat, resumen_var_fwd$res_sq, pch = 19,
+     ylim = c(0, max(resumen_var_fwd$res_sq) * 1.05),
+     xlab = "Media predicha (mu_hat)",
+     ylab = "Varianza empírica promedio",
+     main = "Estructura Media-Varianza en el Modelo Final (m_fwd)")
+lines(resumen_var_fwd$mu_hat, resumen_var_fwd$mu_hat,
+      col = "darkgreen", lwd = 2, lty = 3)
+lines(resumen_var_fwd$mu_hat, phi_fwd * resumen_var_fwd$mu_hat,
+      col = "blue", lwd = 2, lty = 1)
+lines(resumen_var_fwd$mu_hat, resumen_var_fwd$mu_hat + (resumen_var_fwd$mu_hat^2) / theta_fwd,
+      col = "red", lwd = 2, lty = 2)
+legend("topleft",
+       legend = c(
+         "Poisson estándar (Var = mu, phi = 1)",
+         paste0("Cuasi-Poisson final (Var = ", round(phi_fwd, 1), " * mu)"),
+         paste0("Binomial Negativa (Var = mu + mu^2 / ", round(theta_fwd, 2), ")")
+       ),
+       col = c("darkgreen", "blue", "red"),
+       lwd = 2, lty = c(3, 1, 2), bty = "n")
+
+
+############## 2. Tabla comparativa ANOVA de modelos anidados
+anova_anidados <- anova(m_qpois_nulo, m_qpois, m_fwd, test = "F")
+print(anova_anidados)
+
+# Resumen limpio con % de devianza explicada y phi_hat para el informe
+modelos_resumen <- list(
+  "1. Nulo (solo intercepto)" = m_qpois_nulo,
+  "2. Base aditivo (sin visibility)" = m_qpois,
+  "3. Final con interacciones (m_fwd)" = m_fwd
+)
+
+tabla_anidados <- data.frame(
+  Modelo      = names(modelos_resumen),
+  Parametros  = sapply(modelos_resumen, function(m) length(coef(m))),
+  GL_Res      = sapply(modelos_resumen, df.residual),
+  Dev_Res     = round(sapply(modelos_resumen, deviance), 0),
+  Dev_Exp_Pct = round(100 * (1 - sapply(modelos_resumen, deviance) / deviance(m_qpois_nulo)), 2),
+  Phi_hat     = round(sapply(modelos_resumen, function(m) summary(m)$dispersion), 2),
+  F_vs_prev   = c(NA, round(anova_anidados$F[2], 2), round(anova_anidados$F[3], 2)),
+  p_valor     = c(NA, signif(anova_anidados$`Pr(>F)`[2], 3), signif(anova_anidados$`Pr(>F)`[3], 3))
+)
+print(tabla_anidados, row.names = FALSE)
