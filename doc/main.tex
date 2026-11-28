@@ -89,7 +89,7 @@ Universidad Técnica Federico Santa María\par}
 
 {\LARGE\bfseries
 Análisis de la demanda de bicicletas
-Publicas en Seúl\par}
+Públicas en Seúl\par}
 
 \vspace{0.6cm}
 
@@ -127,13 +127,13 @@ David Cabrera\par}
 En los últimos años, los servicios públicos de arriendo de bicicletas han adquirido una creciente importancia como alternativa de transporte urbano, debido a su contribución a la reducción de la congestión vehicular y la disminución de la contaminación ambiental.
 Estos servicios permiten que las personas puedan utilizar bicicletas disponibles en distintos puntos de una ciudad durante un período determinado, para trasladarse de un lugar a otro, devolviéndolas posteriormente en estaciones o puntos habilitados.
 
-De esta manera, constituyen una alternativa de transporte mas accesible para realizar desplazamientos cotidianos.
+De esta manera, constituyen una alternativa de transporte más accesible para realizar desplazamientos cotidianos.
 
 En este contexto, uno de los principales desafíos consiste en comprender y anticipar la demanda de bicicletas, ya que esta puede variar considerablemente dependiendo de factores temporales, climáticos y ambientales.
 
 Por ejemplo, las condiciones meteorológicas, como la temperatura, la humedad, las precipitaciones y la velocidad del viento, pueden influir en la disposición de las personas a utilizar este medio de transporte.
 
-Asimismo, factores como la hora del día, la estación del año y la presencia de días festivos pueden generar diferencias importantes en la cantidad de bicicletas demandadas
+Asimismo, factores como la hora del día, la estación del año y la presencia de días festivos pueden generar diferencias importantes en la cantidad de bicicletas demandadas.
 
 El presente estudio aborda esta problemática utilizando el conjunto de datos
 Seoul Bike Sharing Demand, correspondiente al sistema público de bicicletas compartidas de Seúl, Corea del Sur.
@@ -159,6 +159,8 @@ Los datos utilizados en este estudio corresponden al conjunto Seoul Bike Sharing
 El conjunto de datos se encuentra disponible públicamente en:
 \url{https://archive.ics.uci.edu/dataset/560/seoul+bike+sharing+demand}
 
+Este conjunto de datos fue introducido y analizado originalmente por Sathishkumar, Park y Cho \cite{sathish}.
+
 El procesamiento de los datos y el análisis estadístico se realizaron utilizando el software R.
 
 \FloatBarrier
@@ -166,15 +168,15 @@ El procesamiento de los datos y el análisis estadístico se realizaron utilizan
 
 \subsection{Variables, tamaño muestral y valores perdidos}
 
-La base de datos original contiene $8\,760$ observaciones horarias y 14 variables
-Correspondientes al período comprendido entre diciembre de 2017 y noviembre de 2018. No se detectaron valores perdidos, se excluyeron las 295 horas en que el sistema de arriendo no se encontraba operativo, puesto que el interés del estudio es modelar la demanda cuando el servicio está disponible. Por tanto, la muestra efectiva está constituida por $n=8\,465$ observaciones. Además la temperatura de punto de rocío (dewpoint) fue excluida por su elevada correlación lineal con la temperatura ($r=0{,}91$ en los datos originales) como se ve en el gráfico de la matriz de correlación de Pearson.
+La base de datos original contiene $8\,760$ observaciones horarias y 14 variables,
+correspondientes al período comprendido entre diciembre de 2017 y noviembre de 2018. No se detectaron valores perdidos. Se excluyeron las 295 horas en que el sistema de arriendo no se encontraba operativo, puesto que el interés del estudio es modelar la demanda cuando el servicio está disponible. Por tanto, la muestra efectiva está constituida por $n=8\,465$ observaciones. Además la temperatura de punto de rocío (dewpoint) fue excluida por su elevada correlación lineal con la temperatura ($r=0{,}91$ en los datos originales) como se ve en el gráfico de la matriz de correlación de Pearson.
 
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.8\textwidth}
         \centering
         \includegraphics[width=\textwidth]{plots/01_eda_estados_precipitacion.png}
-        \caption{Estados de precipitación ($n = 8\,465$).}
+        \caption{Estados de precipitación en la base original ($n = 8\,760$).}
         \label{fig:precipitacion}
     \end{subfigure}
     \hfill
@@ -205,9 +207,9 @@ Arriendos por hora & Conteo & $2$--$3556$ bicicletas \\
 Hora & Categórica & 0, 1, $\ldots$, 23 \\
 Temperatura & Continua & $-17{,}8$ a $39{,}4$ $^\circ$C \\
 Humedad relativa & Continua & 0--98 (\%) \\
-Velocidad del viento & Continua & 0--7,4 (m/s) \\
+Velocidad del viento & Continua & 0--7{,}4 (m/s) \\
 Visibilidad & Continua & 27--2000 (unidades de 10 m) \\
-Radiación solar & Continua & 0--3,52 (MJ/m$^2$) \\
+Radiación solar & Continua & 0--3{,}52 (MJ/m$^2$) \\
 Estación & Categórica & Otoño, primavera, verano, invierno \\
 Feriado & Categórica & Sí, no \\
 Día de la semana & Categórica & Lunes, martes, $\ldots$, domingo \\
@@ -237,12 +239,12 @@ cualitativas.
 \toprule
 Variable & Media & DE & Mín. & Mediana & Máx. \\
 \midrule
-Bicicletas arrendadas & 729,16 & 642,35 & 2 & 542 & 3556 \\
-Temperatura & 12,77 & 12,10 & -17,8 & 13,5 & 39,4 \\
-Humedad & 58,15 & 20,48 & 0 & 57 & 98 \\
-Viento & 1,73 & 1,03 & 0 & 1,5 & 7,4 \\
-Visibilidad & 1433,87 & 609,05 & 27 & 1690 & 2000 \\
-Radiación solar & 0,57 & 0,87 & 0 & 0,01 & 3,52 \\
+Bicicletas arrendadas & 729{,}16 & 642{,}35 & 2 & 542 & 3556 \\
+Temperatura & 12{,}77 & 12{,}10 & $-$17{,}8 & 13{,}5 & 39{,}4 \\
+Humedad & 58{,}15 & 20{,}48 & 0 & 57 & 98 \\
+Viento & 1{,}73 & 1{,}03 & 0 & 1{,}5 & 7{,}4 \\
+Visibilidad & 1433{,}87 & 609{,}05 & 27 & 1690 & 2000 \\
+Radiación solar & 0{,}57 & 0{,}87 & 0 & 0{,}01 & 3{,}52 \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
@@ -258,27 +260,27 @@ Radiación solar & 0,57 & 0,87 & 0 & 0,01 & 3,52 \\
 \toprule
 Variable & Categoría & Observaciones & Media \\
 \midrule
-Estación & Primavera & 2160 & 746,25 \\
-         & Verano    & 2208 & 1034,07 \\
-         & Otoño     & 1937 & 924,11 \\
-         & Invierno  & 2160 & 225,54 \\
+Estación & Primavera & 2160 & 746{,}25 \\
+         & Verano    & 2208 & 1034{,}07 \\
+         & Otoño     & 1937 & 924{,}11 \\
+         & Invierno  & 2160 & 225{,}54 \\
 \midrule
-Feriado  & Sí & 408  & 529,15 \\
-         & No & 8057 & 739,28 \\
+Feriado  & Sí & 408  & 529{,}15 \\
+         & No & 8057 & 739{,}28 \\
 \midrule
-Lluvia   & Sí & 516  & 167,26 \\
-         & No & 7949 & 765,63 \\
+Lluvia   & Sí & 516  & 167{,}26 \\
+         & No & 7949 & 765{,}63 \\
 \midrule
-Nieve    & Sí & 443  & 185,10 \\
-         & No & 8022 & 759,20 \\
+Nieve    & Sí & 443  & 185{,}10 \\
+         & No & 8022 & 759{,}20 \\
 \midrule
-Día de la semana & Lunes     & 1248 & 730,56 \\
-                 & Martes    & 1152 & 745,31 \\
-                 & Miércoles & 1200 & 769,96 \\
-                 & Jueves    & 1200 & 718,33 \\
-                 & Viernes   & 1224 & 776,42 \\
-                 & Sábado    & 1217 & 727,60 \\
-                 & Domingo   & 1224 & 637,41 \\
+Día de la semana & Lunes     & 1248 & 730{,}56 \\
+                 & Martes    & 1152 & 745{,}31 \\
+                 & Miércoles & 1200 & 769{,}96 \\
+                 & Jueves    & 1200 & 718{,}33 \\
+                 & Viernes   & 1224 & 776{,}42 \\
+                 & Sábado    & 1217 & 727{,}60 \\
+                 & Domingo   & 1224 & 637{,}41 \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
@@ -301,7 +303,7 @@ Día de la semana & Lunes     & 1248 & 730,56 \\
 %\label{tab:diagnostico}
 %%\end{table}
 
-En la muestra se observa que la cantidad de bicicletas arrendadas por hora presenta una media de 729,16, una mediana de 542 y una desviación estándar de 642,35.
+En la muestra se observa que la cantidad de bicicletas arrendadas por hora presenta una media de 729{,}16, una mediana de 542 y una desviación estándar de 642{,}35.
 
 Los cuartiles primero y tercero corresponden a 214 y 1084 bicicletas, respectivamente, lo que evidencia una considerable variabilidad de la demanda.
 
@@ -388,19 +390,19 @@ Para evaluar el supuesto de equidispersión se utilizó el estadístico de dispe
 \widehat{\phi}=\frac{X_P^2}{n-p},\qquad
 X_P^2=\sum_{i=1}^n\frac{(y_i-\widehat{\mu}_i)^2}{\widehat{\mu}_i},
 \]
-donde valores $\widehat{\phi}>1$ indican sobredispersión respecto al modelo Poisson. En el modelo aditivo inicial se obtuvo $X_P^2 = 883\,646{,}4$ con $8\,424$ grados de libertad residuales, de modo que $\widehat{\phi}=104{,}90$. Por tanto, el supuesto de equidispersión del modelo Poisson no resulta adecuado.
+donde valores $\widehat{\phi}>1$ indican sobredispersión respecto al modelo Poisson. En el modelo aditivo inicial se obtuvo $X_P^2 = 883\,646{,}6$ con $8\,424$ grados de libertad residuales, de modo que $\widehat{\phi}=104{,}90$. Por tanto, el supuesto de equidispersión del modelo Poisson no resulta adecuado.
 
 En base a lo anterior, se consideraron como alternativas los modelos cuasi-Poisson y binomial negativo, cuyas estructuras de varianza son \cite{verhoef}:
 \begin{align*}
 \text{Cuasi-Poisson:}\qquad &\operatorname{Var}(Y_i\mid\mathbf{x}_i)=\phi\mu_i,\\
 \text{Binomial negativa:}\qquad &\operatorname{Var}(Y_i\mid\mathbf{x}_i)=\mu_i+\frac{\mu_i^2}{\theta},
 \end{align*}
-con $\phi>0$ y $\theta>0$. El modelo cuasi-Poisson conserva la estructura de la media del modelo Poisson, pero permite estimar la dispersión y ajustar los errores estándar de las estimaciones mediante cuasi-verosimilitud \cite{mccullagh}
+con $\phi>0$ y $\theta>0$. El modelo cuasi-Poisson conserva la estructura de la media del modelo Poisson, pero permite estimar la dispersión y ajustar los errores estándar de las estimaciones mediante cuasi-verosimilitud \cite{mccullagh}.
 
 \newpage
 
 \subsection{Cuasi-verosimilitud}
-la cuasiverosimilitud no exige conocer la función de probabilidad de la variable respuesta.
+La cuasiverosimilitud no exige conocer la función de probabilidad de la variable respuesta.
 Para su formulación basta especificar los dos primeros momentos condicionales:
 Se postula una media $\mu_i=\mathbb E(Y_i\mid\mathbf x_i)$ y una función de varianza $\operatorname{Var}(Y_i\mid\mathbf x_i)=\phi V(\mu_i)$, con $\phi>0$.
 Siguiendo a McCullagh y Nelder \cite{mccullagh},
@@ -486,7 +488,7 @@ una mejora en el ajuste según el criterio de
 cuasiverosimilitud.
 Sin embargo, dado que no se
 especifica una distribución condicional completa,
-no corresponde utilizar Criterios como son el AIC y el
+no corresponde utilizar criterios como el AIC y el
 test de razón de verosimilitudes.
 
 %%%NewPage
@@ -531,7 +533,7 @@ El modelo se ajusta mediante mínimos cuadrados iterativamente reponderados (IRL
 \]
 
 \subsection{Procedimiento de selección de modelos}
-La construcción del modelo final se realizó en tres etapas en el entorno estadístico \texttt{R} \cite{venables,dunn}\footnote{La estructuración del algoritmo de selección hacia adelante y de validación cruzada por bloques en \texttt{R}, así como la redacción formal en \LaTeX{} de esta sección, contaron con asistencia de Gemini (Google, 2026) y fueron ejecutadas y verificadas manualmente por los autores.}:
+La construcción del modelo final se realizó en tres etapas en el entorno estadístico \texttt{R} \cite{venables,dunn}\footnote{El uso de herramientas de inteligencia artificial en la elaboración de este trabajo se detalla en la Sección~\ref{sec:ia}.}:
 \textbf{Selección de la estructura de varianza:} Siguiendo el criterio propuesto por Ver Hoef y Boveng \cite{verhoef}, se contrastó la relación empírica entre la media y la varianza agrupando los valores ajustados en 15 grupos definidos por cuantiles y calculando, en cada grupo $G_j$, el promedio de las medias ajustadas y de los residuos al cuadrado:
     \[
     \overline{\mu}_j=\frac{1}{|G_j|}\sum_{i\in G_j}\widehat\mu_i,\qquad
@@ -546,7 +548,7 @@ En la Figura~\ref{fig:varmedia} se representan los pares $(\overline\mu_j,\wideh
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.82\textwidth]{plots/02_fit_media_varianza_modelo_base.png}
-\caption{Relación media--varianza observada en 15 grupos y curvas teóricas de los modelos de conteo evaluados. Las curvas usan $\widehat\phi\approx104{,}9$, estimado en el modelo cuasi-Poisson aditivo, y $\widehat\theta\approx4{,}32$, estimado en un modelo binomial negativo con el mismo predictor aditivo.}
+\caption{Relación media--varianza observada en 15 grupos y curvas teóricas de los modelos de conteo evaluados. Los grupos se forman con las medias ajustadas del modelo cuasi-Poisson aditivo sin visibilidad (modelo base). Las curvas usan $\widehat\phi\approx104{,}9$, estimado en el modelo cuasi-Poisson aditivo inicial (con visibilidad), y $\widehat\theta\approx4{,}32$, estimado en un modelo binomial negativo con ese mismo predictor inicial.}
 \label{fig:varmedia}
 \end{figure}
 
@@ -607,9 +609,9 @@ Para evaluar el cumplimiento de los supuestos estructurales del modelo seleccion
     \[
     D_i = \frac{r_{P,i}^2}{p\,\widehat{\phi}}\left(\frac{h_{ii}}{(1 - h_{ii})^2}\right),
     \]
-    utilizando como referencia el corte $D_i > 4/n$, donde $r_{P,i} = (y_i - \widehat{\mu}_i)/\sqrt{\widehat{\mu}_i}$ es el residuo de Pearson. Para evaluar la estabilidad del ajuste, se reestimó el modelo excluyendo las 10 observaciones con mayor distancia de Cook y se comparó la variación en los coeficientes estimados y en el parámetro de dispersión $\widehat{\phi}$ paraver que tanto efecto tenian esas observaciones.
+    utilizando como referencia el corte $D_i > 4/n$, donde $r_{P,i} = (y_i - \widehat{\mu}_i)/\sqrt{\widehat{\mu}_i}$ es el residuo de Pearson. Para evaluar la estabilidad del ajuste, se reestimó el modelo excluyendo las 10 observaciones con mayor distancia de Cook y se comparó la variación en los coeficientes estimados y en el parámetro de dispersión $\widehat{\phi}$ para ver qué tanto efecto tenían esas observaciones.
 
-    \item \textbf{Autocorrelación temporal:} Dada la naturaleza horaria consecutiva de los registros, se inspeccionó la función de autocorrelación muestral (ACF) de los residuos de Pearson hasta el rezago $k = 40$ para evaluar el supuesto de independencia condicional entre observaciones.
+    \item \textbf{Autocorrelación temporal:} Dada la naturaleza horaria consecutiva de los registros, se inspeccionó la función de autocorrelación muestral (ACF) de los residuos de Pearson hasta el rezago $k = 39$ (valor por defecto de \texttt{acf} en \texttt{R}) para evaluar el supuesto de independencia condicional entre observaciones.
 
     \item \textbf{Métricas de validación cruzada:} Sobre los $K = 10$ pliegues agrupados por días completos \cite{roberts}, se cuantificó el desempeño predictivo en la escala original de conteos mediante la raíz del error cuadrático medio ($\text{RMSE}$) y el error absoluto medio ($\text{MAE}$):
     \[
@@ -633,11 +635,11 @@ En particular, al retirar la visibilidad del modelo,
 se obtuvo un incremento aproximado de devianza de
 
 \[
-\Delta D \approx 1,47,
+\Delta D \approx 1{,}47,
 \]
 
 lo que representa un incremento porcentual de
-aproximadamente $0,00016\%$ respecto de la devianza
+aproximadamente $0{,}00016\%$ respecto de la devianza
 del modelo aditivo completo.
 
 \begin{table}[htbp]
@@ -669,20 +671,20 @@ la misma devianza residual.
 
 Respecto de las variables excluidas durante el
 preprocesamiento, la temperatura de punto de rocío
-presentó una correlación de Pearson de $0,91$ con
+presentó una correlación de Pearson de $0{,}91$ con
 la temperatura, por lo que se decidió conservar
 únicamente esta última.
 
 Por otra parte, se excluyeron las 295 observaciones
 correspondientes a horas en las que el servicio no
-se encontraba operativo, equivalentes al $3,37\%$
+se encontraba operativo, equivalentes al $3{,}37\%$
 de las 8\,760 observaciones originales. De esta
 manera, la variable de funcionamiento del servicio
 dejó de presentar variabilidad en la muestra efectiva.
 
 En cuanto a las precipitaciones, se registraron
-516 horas con lluvia ($6,10\%$) y 443 horas con
-nieve ($5,23\%$), sobre un total de 8\,465
+516 horas con lluvia ($6{,}10\%$) y 443 horas con
+nieve ($5{,}23\%$), sobre un total de 8\,465
 observaciones. Debido a la elevada proporción de
 registros sin precipitaciones, se utilizaron
 variables indicadoras de presencia o ausencia,
@@ -700,10 +702,10 @@ variables en forma binaria.
 \newpage
 
 Finalmente, los valores del factor de inflación
-de la varianza generalizado ajustado satisficieron
+de la varianza generalizado ajustado \cite{fox} satisficieron
 
 \[
-\mathrm{GVIF}^{1/(2\,\mathrm{gl})}<2,4,
+\mathrm{GVIF}^{1/(2\,\mathrm{gl})}<2{,}4,
 \]
 
 por lo que no se encontraron indicios de
@@ -718,7 +720,7 @@ y día de la semana.
 
 Este modelo contiene 40 parámetros estimables,
 presenta una devianza residual de $904\,698$
-y explica el $80,14\%$ de la devianza del modelo
+y explica el $80{,}14\%$ de la devianza del modelo
 nulo.
 Sobre este modelo se realizó la posterior
 incorporación de interacciones.
@@ -733,21 +735,21 @@ De las 45 interacciones evaluadas individualmente respecto del modelo base, el p
 \begin{adjustbox}{max width=\linewidth}
 \begin{tabular}{lrrr}\toprule
 Interacción & $q$ & $R_D$ (\%) & $R_D/q$ \\\midrule
-Temperatura $\times$ Radiación & 1 & 8,09 & 8,090 \\
-Temperatura $\times$ Estación & 3 & 20,97 & 6,990 \\
-Radiación $\times$ Estación & 3 & 7,22 & 2,407 \\
-Humedad $\times$ Lluvia & 1 & 2,01 & 2,010 \\
-Humedad $\times$ Estación & 3 & 3,58 & 1,193 \\
-Hora $\times$ Temperatura & 23 & 8,80 & 0,383 \\
-Radiación $\times$ Día de la semana & 6 & 2,22 & 0,370 \\
-Hora $\times$ Radiación & 14 & 2,85 & 0,204 \\
-Hora $\times$ Estación & 69 & 9,53 & 0,138 \\
-Hora $\times$ Día de la semana & 138 & 18,44 & 0,134 \\\bottomrule
+Temperatura $\times$ Radiación & 1 & 8{,}09 & 8{,}090 \\
+Temperatura $\times$ Estación & 3 & 20{,}97 & 6{,}990 \\
+Radiación $\times$ Estación & 3 & 7{,}22 & 2{,}407 \\
+Humedad $\times$ Lluvia & 1 & 2{,}01 & 2{,}010 \\
+Humedad $\times$ Estación & 3 & 3{,}58 & 1{,}193 \\
+Hora $\times$ Temperatura & 23 & 8{,}80 & 0{,}383 \\
+Radiación $\times$ Día de la semana & 6 & 2{,}22 & 0{,}370 \\
+Hora $\times$ Radiación & 14 & 2{,}85 & 0{,}204 \\
+Hora $\times$ Estación & 69 & 9{,}53 & 0{,}138 \\
+Hora $\times$ Día de la semana & 138 & 18{,}44 & 0{,}134 \\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
-Las interacciones temperatura--radiación y temperatura--estación destacan por su reducción de devianza por parámetro adicional. En cambio, hora--día de la semana logra una reducción total del $18,44\%$, pero requiere 138 parámetros adicionales, lo que evidencia un mayor costo en complejidad.
+Las interacciones temperatura--radiación y temperatura--estación destacan por su reducción de devianza por parámetro adicional. En cambio, hora--día de la semana logra una reducción total del $18{,}44\%$, pero requiere 138 parámetros adicionales, lo que evidencia un mayor costo en complejidad.
 
 La Tabla~\ref{tab:res_pasos} presenta la secuencia de incorporación obtenida en la selección iterativa. En cada paso se muestra la interacción elegida, es decir, la de menor valor-$p$ entre las que cumplían ambas condiciones, junto con su reducción de devianza respecto del modelo del paso anterior. Como los valores-$p$ son extremadamente pequeños, se reportan en escala $\log_{10}$.
 
@@ -759,11 +761,11 @@ La Tabla~\ref{tab:res_pasos} presenta la secuencia de incorporación obtenida en
 \begin{tabular}{rlrrrr}\toprule
 Paso & Interacción & $q$ & $R_D$ (\%) & $\log_{10}(\text{valor-}p)$ & Parámetros \\\midrule
 0 & Base & -- & -- & -- & 40 \\
-1 & Temperatura $\times$ Estación & 3 & 20,97 & $-433{,}9$ & 43 \\
-2 & Hora $\times$ Día de la semana & 138 & 24,11 & $-401{,}7$ & 181 \\
-3 & Hora $\times$ Temperatura & 23 & 12,51 & $-226{,}9$ & 204 \\
-4 & Humedad $\times$ Lluvia & 1 & 4,21 & $-83{,}3$ & 205 \\
-5 & Hora $\times$ Estación & 69 & 2,35 & $-15{,}1$ & 274 \\\bottomrule
+1 & Temperatura $\times$ Estación & 3 & 20{,}97 & $-433{,}9$ & 43 \\
+2 & Hora $\times$ Día de la semana & 138 & 24{,}11 & $-401{,}7$ & 181 \\
+3 & Hora $\times$ Temperatura & 23 & 12{,}51 & $-226{,}9$ & 204 \\
+4 & Humedad $\times$ Lluvia & 1 & 4{,}21 & $-83{,}3$ & 205 \\
+5 & Hora $\times$ Estación & 69 & 2{,}35 & $-15{,}1$ & 274 \\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
@@ -777,11 +779,11 @@ La incorporación de términos se detuvo después de cinco interacciones. La Tab
 \begin{adjustbox}{max width=\linewidth}
 \begin{tabular}{lrrr}\toprule
 Interacción & $q$ & $R_D$ (\%) & $\log_{10}(\text{valor-}p)$ \\\midrule
-Hora $\times$ Radiación & 14 & 1,70 & $-24{,}2$ \\
-Temperatura $\times$ Radiación & 1 & 1,20 & $-24{,}1$ \\
-Radiación $\times$ Estación & 3 & 0,57 & $-10{,}1$ \\
-Radiación $\times$ Día de la semana & 6 & 0,54 & $-7{,}8$ \\
-Humedad $\times$ Estación & 3 & 0,26 & $-4{,}3$ \\\bottomrule
+Hora $\times$ Radiación & 14 & 1{,}70 & $-24{,}2$ \\
+Temperatura $\times$ Radiación & 1 & 1{,}20 & $-24{,}1$ \\
+Radiación $\times$ Estación & 3 & 0{,}57 & $-10{,}1$ \\
+Radiación $\times$ Día de la semana & 6 & 0{,}54 & $-7{,}8$ \\
+Humedad $\times$ Estación & 3 & 0{,}26 & $-4{,}3$ \\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
@@ -794,7 +796,7 @@ Desde el punto de vista de la parsimonia, temperatura--estación y humedad--lluv
 
 \subsection{Modelo seleccionado e interpretación}
 
-El modelo final contiene 274 coeficientes estimables y, respecto al predictor aditivo $\eta_i^{(B)}$ definido anteriormente, incorpora las siguientes interacciones:
+Sea $\eta_i^{(B)}$ el predictor del modelo base, es decir, el predictor lineal inicial definido en la Sección de metodología sin el término de visibilidad $\beta_4A_i$. El modelo final contiene 274 coeficientes estimables y, respecto de $\eta_i^{(B)}$, incorpora las siguientes interacciones:
 \begin{align*}
 \eta_i^{(F)}={}&\eta_i^{(B)}
 +\sum_{j\in\{P,V,I\}} a_j T_i\mathbb{I}(E_i=j)\\
@@ -816,7 +818,7 @@ con los coeficientes de interacción iguales a cero en sus respectivas categorí
 \[
 \exp(\widehat\lambda+\widehat\xi u),
 \]
-donde $\widehat\lambda\approx1,99$ es el coeficiente principal de lluvia registrado en la sesión. $\\$
+donde $\widehat\lambda\approx1{,}99$ es el coeficiente principal de lluvia estimado en el modelo final.
 Su interpretación aislada corresponde a humedad cero y no representa la asociación general de la lluvia con la demanda.
 
 \subsection{Evaluación descriptiva del ajuste}
@@ -828,23 +830,36 @@ Su interpretación aislada corresponde a humedad cero y no representa la asociac
 \begin{adjustbox}{max width=\linewidth}
 \begin{tabular}{lrrrrr}\toprule
 Modelo & $p$ & gl resid. & $D$ & Dev. exp. (\%) & $\widehat\phi$ \\\midrule
-Nulo & 1 & 8464 & $4\,556\,385$ & 0,00 & 565,88 \\
-Base & 40 & 8425 & $904\,698$ & 80,14 & 104,89 \\
-Final & 274 & 8191 & $444\,099$ & 90,25 & 50,89 \\\bottomrule
+Nulo & 1 & 8464 & $4\,556\,385$ & 0{,}00 & 565{,}88 \\
+Base & 40 & 8425 & $904\,698$ & 80{,}14 & 104{,}89 \\
+Final & 274 & 8191 & $444\,099$ & 90{,}25 & 50{,}89 \\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
-La Tabla~\ref{tab:res_ajuste} muestra que la incorporación de interacciones reduce la devianza residual del modelo base en un $50,91\%$ y aumenta el porcentaje de devianza explicada de $80,14\%$ a $90,25\%$. Esta mejora se obtiene a costa de 234 parámetros adicionales. Asimismo, la dispersión estimada disminuye de $104,89$ a $50,89$, aunque sigue siendo considerablemente mayor que uno. Por tanto, el modelo final representa mejor la demanda observada, pero conserva una variabilidad residual elevada y un costo importante en complejidad.
+La Tabla~\ref{tab:res_ajuste} muestra que la incorporación de interacciones reduce la devianza residual del modelo base en un $50{,}91\%$ y aumenta el porcentaje de devianza explicada de $80{,}14\%$ a $90{,}25\%$. Esta mejora se obtiene a costa de 234 parámetros adicionales. Asimismo, la dispersión estimada disminuye de $104{,}89$ a $50{,}89$, aunque sigue siendo considerablemente mayor que uno. Por tanto, el modelo final representa mejor la demanda observada, pero conserva una variabilidad residual elevada y un costo importante en complejidad.
 
 \subsection{Diagnóstico del ajuste y limitaciones de la inferencia}
+
+La Figura~\ref{fig:diag_fwd} resume el diagnóstico del modelo final: (A) residuos de devianza estandarizados frente al predictor lineal, (B) residuos frente a la temperatura, (C) distancia de Cook y (D) función de autocorrelación de los residuos de Pearson.
 
 \begin{figure}[htbp]
 \centering\includegraphics[width=.95\textwidth]{plots/02_fit_diagnostico_residuos_m_fwd.png}
 \caption{Diagnóstico de residuos y observaciones influyentes del modelo final.}
+\label{fig:diag_fwd}
 \end{figure}
 
-El registro reporta una distancia de Cook máxima de aproximadamente $0,019$. Entre las diez observaciones con mayor distancia de Cook destaca la del 19 de abril de 2018 a las 08:00, con 20 arriendos observados frente a 1582 ajustados. Cuatro de estas diez observaciones corresponden a horas con lluvia, aunque solo 516 de las 8465 horas de la muestra presentan lluvia.
+\paragraph{Residuos.} De las $8\,465$ observaciones, 483 ($5{,}7\%$) tienen residuos de devianza estandarizados mayores que 2 en valor absoluto y 204 ($2{,}4\%$) mayores que 3. La curva suavizada (LOWESS) de los residuos frente al predictor lineal se mantiene entre $-0{,}05$ y $0{,}24$, y frente a la temperatura entre $-0{,}23$ y $0{,}09$, por lo que no se observa una curvatura marcada en ninguno de los dos casos.
+
+Como en el panel A la mayoría de los puntos se concentra en valores altos del predictor lineal, se agruparon los residuos en 30 intervalos con igual número de observaciones (Figura~\ref{fig:res_bin}). Los promedios por intervalo varían entre $-0{,}26$ y $0{,}16$ y, en general, son levemente negativos. En 9 de los 30 intervalos el promedio se aleja de cero en más de dos errores estándar. Las mayores desviaciones se encuentran en los extremos: el intervalo de menor demanda predicha tiene un promedio de $0{,}14$ y el de mayor demanda predicha uno de $-0{,}26$. Esto indica que el modelo tiende a subestimar levemente las demandas más bajas y a sobreestimar las más altas, aunque las desviaciones son pequeñas en comparación con la escala de los residuos.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=.75\textwidth]{plots/02_fit_residuos_por_bin_m_fwd.png}
+\caption{Promedio de los residuos de devianza estandarizados en 30 intervalos del predictor lineal, con bandas de $\pm2$ errores estándar.}
+\label{fig:res_bin}
+\end{figure}
+
+\paragraph{Observaciones influyentes.} La distancia de Cook máxima es $0{,}019$, muy inferior a 1, aunque 432 observaciones superan el umbral orientativo $4/n$. La observación más influyente corresponde al 22 de abril de 2018 a las 15:00, una hora con lluvia en la que se registraron 234 arriendos frente a 1362 ajustados. Entre las diez observaciones con mayor distancia de Cook, cuatro corresponden a horas con lluvia, aunque solo 516 de las $8\,465$ horas de la muestra presentan lluvia. En este grupo también aparece el residuo más extremo, el del 19 de abril de 2018 a las 08:00, con 20 arriendos observados frente a 1582 ajustados.
 
 \begin{table}[htbp]
 \centering\small
@@ -853,20 +868,18 @@ El registro reporta una distancia de Cook máxima de aproximadamente $0,019$. En
 \begin{adjustbox}{max width=\linewidth}
 \begin{tabular}{lrr}\toprule
 Coeficiente & Diferencia absoluta & Cambio multiplicativo (\%) \\\midrule
-Lluvia (sí) & 0,472 & 60,3 \\
-Hora 13 $\times$ Martes & 0,038 & 3,9 \\
-Hora 8 $\times$ Verano & 0,032 & 3,3 \\\bottomrule
+Lluvia (sí) & 0{,}472 & 60{,}3 \\
+Hora 13 $\times$ Martes & 0{,}038 & 3{,}9 \\
+Hora 8 $\times$ Verano & 0{,}032 & 3{,}3 \\
+Hora 22 $\times$ Verano & 0{,}031 & 3{,}1 \\
+Hora 18 $\times$ Miércoles & 0{,}028 & 2{,}8 \\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
-La mayor variación corresponde al coeficiente principal de lluvia (Tabla~\ref{tab:res_sens}); el cambio multiplicativo mide la magnitud de la diferencia y no su dirección. La dispersión disminuye de $50,89$ a $49,31$ tras la exclusión temporal. Estos resultados aconsejan cautela al interpretar los términos relacionados con la lluvia, sin justificar la eliminación definitiva de las observaciones.
+Al reajustar el modelo sin estas diez observaciones, la mayor variación corresponde al coeficiente principal de lluvia (Tabla~\ref{tab:res_sens}), que pasa de $1{,}99$ a $2{,}46$. El resto de los coeficientes cambia menos de un $4\%$ en escala multiplicativa. La dispersión disminuye de $50{,}89$ a $49{,}31$. Estos resultados aconsejan cautela al interpretar los términos relacionados con la lluvia, pero no justifican eliminar estas observaciones, que corresponden a registros reales.
 
-La autocorrelación de los residuos de Pearson es aproximadamente $0,61$ en el primer rezago y $0,18$ en el rezago 24. Debido a la exclusión de horas sin funcionamiento, los rezagos se refieren a registros disponibles y no necesariamente a horas consecutivas de reloj. La dependencia residual limita la inferencia convencional del cuasi-Poisson, de modo que las comparaciones de ajuste se interpretan descriptivamente.
-
-% El ZIP contiene el código de los gráficos de residuos, pero no sus figuras
-% exportadas ni una interpretación visual de las curvas LOWESS. No se
-% atribuyen patrones de curvatura o ausencia de ellos sin observar las figuras.
+\paragraph{Autocorrelación.} La autocorrelación de los residuos de Pearson es $0{,}61$ en el primer rezago, $0{,}49$ en el segundo y $0{,}18$ en el rezago 24. Debido a la exclusión de horas sin funcionamiento, los rezagos se refieren a registros disponibles y no necesariamente a horas consecutivas de reloj. Esta dependencia confirma la sospecha planteada durante la selección del modelo (Sección~\ref{sec:seleccion}): las observaciones no son independientes, por lo que los errores estándar y los valores-$p$ del cuasi-Poisson son demasiado optimistas. Por ello, las pruebas $F$ se utilizaron solo como regla de selección y las comparaciones de ajuste se interpretan de forma descriptiva.
 
 \subsection{Validación descriptiva por bloques temporales}
 
@@ -877,13 +890,13 @@ La autocorrelación de los residuos de Pearson es aproximadamente $0,61$ en el p
 \begin{adjustbox}{max width=\linewidth}
 \begin{tabular}{lrrrr}\toprule
 Modelo & RMSE Train & RMSE CV & MAE Train & MAE CV \\\midrule
-Base & 312,08 & 318,41 & 207,25 & 212,42 \\
-Final & 206,00 & 215,96 & 125,05 & 131,55 \\\bottomrule
+Base & 312{,}08 & 318{,}41 & 207{,}25 & 212{,}42 \\
+Final & 206{,}00 & 215{,}96 & 125{,}05 & 131{,}55 \\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
-El modelo final reduce el RMSE de validación en aproximadamente un $32,2\%$ y el MAE en un $38,1\%$ respecto del modelo base. Si bien la brecha relativa entre entrenamiento y validación aumenta hasta el $4,8\%$ para RMSE y el $5,2\%$ para MAE, los errores de validación son considerablemente menores.
+El modelo final reduce el RMSE de validación en aproximadamente un $32{,}2\%$ y el MAE en un $38{,}1\%$ respecto del modelo base. Si bien la brecha relativa entre entrenamiento y validación aumenta hasta el $4{,}8\%$ para RMSE y el $5{,}2\%$ para MAE, los errores de validación son considerablemente menores. Estas brechas corresponden a la semilla 123; al usar el promedio de los errores de validación de las cinco semillas (Tabla~\ref{tab:conclusion_cv}) resultan de $5{,}0\%$ y $5{,}3\%$, respectivamente.
 
 \begin{table}[htbp]
 \centering\small
@@ -892,8 +905,8 @@ El modelo final reduce el RMSE de validación en aproximadamente un $32,2\%$ y e
 \begin{adjustbox}{max width=\linewidth}
 \begin{tabular}{lrr}\toprule
 Modelo & RMSE CV & MAE CV \\\midrule
-Base & $318,99\pm1,35$ & $212,37\pm0,78$ \\
-Final & $216,25\pm0,96$ & $131,66\pm0,36$ \\\bottomrule
+Base & $318{,}99\pm1{,}35$ & $212{,}37\pm0{,}78$ \\
+Final & $216{,}25\pm0{,}96$ & $131{,}66\pm0{,}36$ \\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
@@ -918,15 +931,15 @@ la estación del año y la presencia de lluvia son variables
 que presentan aportes importantes al ajuste del modelo.
 
 En contraste, la exclusión de la visibilidad genera un
-incremento de devianza de aproximadamente $0,00016\%$,
+incremento de devianza de aproximadamente $0{,}00016\%$,
 por lo que se decidió prescindir de esta variable,
 considerando el principio de parsimonia.
 
-El modelo aditivo explica el $80,14\%$ de la devianza
+El modelo aditivo explica el $80{,}14\%$ de la devianza
 del modelo nulo, mientras que la incorporación de
 interacciones permite aumentar este porcentaje al
-$90,25\%$, reduciendo la devianza residual en un
-$50,91\%$ respecto del modelo aditivo.
+$90{,}25\%$, reduciendo la devianza residual en un
+$50{,}91\%$ respecto del modelo aditivo.
 
 Esto indica que considerar únicamente los efectos
 principales no permite representar completamente las
@@ -942,14 +955,71 @@ parsimonia del modelo.
 
 Respecto de la capacidad predictiva, el modelo final
 presentó un RMSE promedio de validación cruzada de
-$216,25$ y un MAE de $131,66$ bicicletas por hora,
-frente a los valores de $318,99$ y $212,37$,
+$216{,}25$ y un MAE de $131{,}66$ bicicletas por hora,
+frente a los valores de $318{,}99$ y $212{,}37$,
 respectivamente, obtenidos con el modelo aditivo.
 
 Por consiguiente, bajo la especificación considerada,
 la incorporación de interacciones permite representar
 de mejor manera la demanda observada y obtener menores
 errores de predicción en las particiones evaluadas.
+
+\paragraph{Por qué la evaluación se basa en validación cruzada.}
+Como se mostró en el diagnóstico, los residuos del modelo presentan una autocorrelación marcada ($0{,}61$ en el primer rezago). Por ello, los valores-$p$ de las pruebas $F$, que resultaron extremadamente pequeños para casi todos los términos, no son confiables como evidencia inferencial: suponen observaciones independientes y, al no cumplirse este supuesto, tienden a declarar significativos incluso términos con aportes muy pequeños (entre los efectos principales, solo la visibilidad resultó no significativa). En consecuencia, las conclusiones sobre la relación entre las variables y la demanda no se basan en la significancia de los coeficientes, sino en la capacidad del modelo para predecir datos que no utilizó en su ajuste y en la magnitud de los efectos que estima.
+
+Para ello se aplicó validación cruzada por bloques de 10 pliegues, donde cada bloque corresponde a días completos, de modo que las 24 horas de un mismo día quedan siempre en el mismo pliegue. El procedimiento se repitió con cinco semillas distintas (1, 42, 123, 2024 y 777) para verificar que los resultados no dependen de la asignación aleatoria de los días a los pliegues (Tabla~\ref{tab:conclusion_cv}).
+
+\begin{table}[htbp]
+\centering\small
+\caption{Error de predicción en entrenamiento y en validación cruzada por días (promedio y desviación estándar sobre cinco semillas). Las brechas se calculan con el promedio de los errores de validación de las cinco semillas.}
+\label{tab:conclusion_cv}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lrrrrrrr}\toprule
+Modelo & Parámetros & RMSE entren. & RMSE CV & Brecha (\%) & MAE entren. & MAE CV & Brecha (\%) \\\midrule
+Aditivo & 40 & 312{,}08 & $318{,}99 \pm 1{,}35$ & 2{,}2 & 207{,}25 & $212{,}37 \pm 0{,}78$ & 2{,}5 \\
+Final & 274 & 206{,}00 & $216{,}25 \pm 0{,}96$ & 5{,}0 & 125{,}05 & $131{,}66 \pm 0{,}36$ & 5{,}3 \\\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+El modelo final reduce el error de predicción en días no utilizados en el ajuste en aproximadamente un $32\%$ en RMSE y un $38\%$ en MAE respecto del modelo aditivo, y esta mejora se repite con todas las semillas. Además, la diferencia entre el error de validación y el de entrenamiento es de apenas un $5\%$, por lo que, pese a sus 274 parámetros, no se observan indicios de un sobreajuste importante en esta validación. Esto sugiere que las interacciones incorporadas capturan estructura presente en los datos y no solo ruido. Sin embargo, como la selección de interacciones se realizó con la muestra completa, esta validación no garantiza la ausencia de sobreajuste.
+
+\paragraph{Importancia de cada variable.}
+Para cuantificar el aporte de cada variable sin depender de los valores-$p$, se reajustó el modelo final eliminando cada variable junto con todas sus interacciones, y se midió la devianza que se pierde como porcentaje de la devianza del modelo nulo (Figura~\ref{fig:importancia}).
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=.85\textwidth]{plots/03_efectos_importancia_variables.png}
+\caption{Devianza perdida al eliminar cada variable y sus interacciones del modelo final, como porcentaje de la devianza del modelo nulo.}
+\label{fig:importancia}
+\end{figure}
+
+La hora del día es, por amplio margen, la variable más importante ($29{,}70\%$), seguida de la estación del año ($10{,}99\%$), la temperatura ($6{,}25\%$), la lluvia ($6{,}05\%$) y el día de la semana ($4{,}37\%$). La humedad tiene un aporte menor ($1{,}37\%$), mientras que el feriado ($0{,}16\%$), la radiación solar ($0{,}16\%$), el viento ($0{,}06\%$) y la nieve ($0{,}05\%$) tienen un aporte marginal. En conjunto, las variables temporales (hora, estación y día de la semana) explican la mayor parte de la variabilidad de la demanda, y entre las meteorológicas destacan la temperatura y la lluvia.
+
+\paragraph{Efectos de las variables con interacciones.}
+Como la temperatura, la lluvia y la hora participan en interacciones, sus efectos no pueden leerse directamente de un único coeficiente. Por ello se calcularon efectos promedio a partir de las predicciones del modelo: se modifica una sola variable, manteniendo todas las demás en sus valores observados, y se compara el promedio de las predicciones resultantes con el promedio de las predicciones originales. De este modo, el efecto incluye todas las interacciones de la variable.
+
+\textit{Temperatura.} Un aumento de $5\,^\circ$C en todas las horas multiplica la demanda esperada por $1{,}303$ en primavera, $1{,}254$ en invierno y $1{,}159$ en otoño, es decir, aumentos de $30\%$, $25\%$ y $16\%$, respectivamente. En verano, en cambio, la multiplica por $0{,}831$, lo que corresponde a una disminución del $17\%$. Según la franja horaria, el efecto de $+5\,^\circ$C es mayor en la noche (21--23 h: $+14\%$; 0--5 h: $+11\%$) y en la tarde (17--20 h: $+11\%$), y menor en la mañana (6--9 h: $+2\%$), cuando gran parte de los viajes corresponde a desplazamientos obligados al trabajo o a clases. La Figura~\ref{fig:temp_estacion} muestra la demanda esperada según la temperatura dentro del rango observado en cada estación: en otoño, primavera e invierno crece con la temperatura, mientras que en verano disminuye desde cerca de $1\,468$ arriendos por hora a $18{,}6\,^\circ$C hasta cerca de 765 a $35{,}9\,^\circ$C.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=.85\textwidth]{plots/03_efectos_temperatura_por_estacion.png}
+\caption{Arriendos esperados según la temperatura en cada estación, dentro del rango observado (percentiles 2{,}5 a 97{,}5) de cada una.}
+\label{fig:temp_estacion}
+\end{figure}
+
+\textit{Lluvia.} Como la lluvia interactúa con la humedad y casi no se registran horas con lluvia y humedad baja (solo 8 de las 516 horas con lluvia tienen humedad menor o igual a $57\%$), su efecto se evaluó únicamente en las horas en que efectivamente llovió, comparando la predicción observada con la que se obtendría en esas mismas horas sin lluvia. En esas horas, cuya humedad mediana es $94\%$, la lluvia multiplica la demanda esperada por $0{,}225$, es decir, la reduce en aproximadamente un $77{,}5\%$. Este resultado es coherente con los promedios observados de 167 arriendos por hora con lluvia y 766 sin lluvia.
+
+\textit{Hora y día de la semana.} La Figura~\ref{fig:perfil_horario} muestra el perfil horario predicho para días hábiles y fines de semana. En días hábiles se observan dos máximos marcados, a las 08:00 (1306 arriendos por hora) y a las 18:00 (1724), coherentes con los desplazamientos al trabajo o a clases. En fines de semana el máximo de la mañana desaparece (421 arriendos a las 08:00) y la demanda se concentra al mediodía y en la tarde, superando a la de los días hábiles entre las 10:00 y las 16:00 (por ejemplo, 1023 frente a 790 a las 15:00). En consecuencia, el día de la semana no solo cambia el nivel de la demanda, sino sobre todo la forma de su perfil diario.
+
+\begin{figure}[htbp]
+\centering\includegraphics[width=.9\textwidth]{plots/03_efectos_perfil_horario.png}
+\caption{Perfil horario de arriendos en días hábiles y fines de semana. Líneas: promedio predicho por el modelo final; puntos: promedio observado.}
+\label{fig:perfil_horario}
+\end{figure}
+
+\textit{Estación.} La demanda promedio predicha es de 1034 arriendos por hora en verano, 924 en otoño, 746 en primavera y 226 en invierno, por lo que en invierno la demanda esperada es aproximadamente 4{,}6 veces menor que en verano. Estos promedios coinciden con los observados en el análisis exploratorio, ya que, con enlace logarítmico y la estación como factor, el modelo reproduce exactamente la media observada de cada estación.
+
+\paragraph{Respuesta.}
+La demanda horaria de bicicletas en Seúl está determinada principalmente por factores temporales. La hora del día es el factor más importante y su efecto depende del tipo de día: en días hábiles predominan los máximos asociados a los desplazamientos al trabajo o a clases, mientras que en fines de semana el uso se concentra al mediodía y en la tarde. La estación del año también es determinante, con una demanda invernal muy inferior a la del resto del año. Entre las condiciones climáticas, la lluvia es la que produce el mayor efecto puntual, al reducir la demanda esperada en cerca de un $78\%$ en las horas en que ocurre, mientras que la temperatura aumenta la demanda en otoño, invierno y primavera, pero la reduce en verano. La humedad, la radiación solar, el viento, la nieve y los feriados tienen un aporte comparativamente menor. Estas conclusiones se basan en la magnitud de los efectos estimados y en un modelo cuya capacidad predictiva fue validada en días no utilizados en el ajuste, y no en los valores-$p$, que no son confiables debido a la autocorrelación de los residuos.
 
 \bigskip
 \newpage
@@ -1086,13 +1156,13 @@ esperada ante un aumento de $1\,^\circ$C.}
 \toprule
 Hora & Otoño & Primavera & Verano & Invierno \\
 \midrule
-00:00 & 4,31 & 6,83 & -2,58 & 6,12 \\
-06:00 & 3,35 & 5,85 & -3,47 & 5,14 \\
-08:00 & 1,28 & 3,73 & -5,41 & 3,03 \\
-12:00 & 1,79 & 4,25 & -4,93 & 3,55 \\
-18:00 & 3,03 & 5,52 & -3,78 & 4,81 \\
-20:00 & 4,88 & 7,41 & -2,05 & 6,69 \\
-23:00 & 4,55 & 7,08 & -2,35 & 6,36 \\
+00:00 & 4{,}31 & 6{,}83 & $-$2{,}58 & 6{,}12 \\
+06:00 & 3{,}35 & 5{,}85 & $-$3{,}47 & 5{,}14 \\
+08:00 & 1{,}28 & 3{,}73 & $-$5{,}41 & 3{,}03 \\
+12:00 & 1{,}79 & 4{,}25 & $-$4{,}93 & 3{,}55 \\
+18:00 & 3{,}03 & 5{,}52 & $-$3{,}78 & 4{,}81 \\
+20:00 & 4{,}88 & 7{,}41 & $-$2{,}05 & 6{,}69 \\
+23:00 & 4{,}55 & 7{,}08 & $-$2{,}35 & 6{,}36 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1103,66 +1173,66 @@ Para la primavera a las 20:00 horas, se obtuvo una
 pendiente estimada de
 
 \[
-\widehat{b}_{jh}=0,07150.
+\widehat{b}_{jh}=0{,}07150.
 \]
 
 Por lo tanto, la razón de medias estimada es
 
 \[
-\exp(0,07150)\approx 1,0741.
+\exp(0{,}07150)\approx 1{,}0741.
 \]
 
 Esto significa que, ante un aumento de un grado Celsius,
 la demanda esperada se multiplica aproximadamente
-por $1,0741$, manteniendo constantes las demás
+por $1{,}0741$, manteniendo constantes las demás
 covariables.
 
 Equivalentemente, la variación porcentual está dada por
 
 \[
-100(1,0741-1)=7,41\%.
+100(1{,}0741-1)=7{,}41\%.
 \]
 
 Por consiguiente, durante la primavera a las 20:00 horas,
 un aumento de un grado Celsius se asocia con un
-incremento estimado del $7,41\%$ en la cantidad
+incremento estimado del $7{,}41\%$ en la cantidad
 esperada de bicicletas arrendadas.
 
 En contraste, para el verano a las 08:00 horas,
 se obtuvo una pendiente estimada de
 
 \[
-\widehat{b}_{jh}=-0,05558.
+\widehat{b}_{jh}=-0{,}05558.
 \]
 
 La razón de medias correspondiente es
 
 \[
-\exp(-0,05558)\approx 0,9459.
+\exp(-0{,}05558)\approx 0{,}9459.
 \]
 
 En este caso, la demanda esperada se multiplica por
-$0,9459$, lo que equivale a una disminución de
+$0{,}9459$, lo que equivale a una disminución de
 
 \[
-100(0,9459-1)=-5,41\%.
+100(0{,}9459-1)=-5{,}41\%.
 \]
 
 \paragraph{Comparación entre estaciones.}
 
 Durante la primavera se obtiene la mayor asociación
 positiva entre la temperatura y la demanda esperada,
-con incrementos estimados entre $3,73\%$ y $7,41\%$,
+con incrementos estimados entre $3{,}73\%$ y $7{,}41\%$,
 dependiendo de la hora del día.
 
 En invierno, los incrementos se encuentran entre
-$3,03\%$ y $6,69\%$, mientras que en otoño varían
-entre $1,28\%$ y $4,88\%$.
+$3{,}03\%$ y $6{,}69\%$, mientras que en otoño varían
+entre $1{,}28\%$ y $4{,}88\%$.
 
 En contraste, durante el verano se observa una
 asociación negativa para las 24 horas del día,
-con disminuciones estimadas entre $2,05\%$ y
-$5,41\%$ ante un aumento de un grado Celsius.
+con disminuciones estimadas entre $2{,}05\%$ y
+$5{,}41\%$ ante un aumento de un grado Celsius.
 
 Una posible explicación de este comportamiento es que,
 durante las estaciones más frías, un aumento de la
@@ -1207,7 +1277,7 @@ La principal limitación del modelo es la autocorrelación
 temporal de los residuos, puesto que el modelo cuasi-Poisson
 permite considerar la sobredispersión, pero no la dependencia
 entre observaciones. Si bien el parámetro de dispersión
-disminuyó de $104,89$ a $50,89$, la sobredispersión sigue
+disminuyó de $104{,}89$ a $50{,}89$, la sobredispersión sigue
 siendo considerable.
 
 Debido a la dependencia temporal, los resultados se
@@ -1223,22 +1293,22 @@ parsimoniosos que permitan conservar la calidad del ajuste
 y la capacidad predictiva.
 \newpage
 \FloatBarrier
-\section{Declaración de uso de herramientas de inteligencia artificial}
+\section{Declaración de uso de herramientas de inteligencia artificial}\label{sec:ia}
 En la elaboración del presente informe se utilizaron
 herramientas de inteligencia artificial como apoyo al
-desarrollo de la tarea. Se utilizó Gemini (Google, 2026)
-para estructurar la plantilla base donde se desarrollo posteriormente el informe afectando las secciones 1-6. Fue validada por nosotros donde nos preocupamos de la correcta visualización y que contenga las secciones y subsecciones relevantes que trataríamos en este trabajo. Además para la busqueda de referencias bibliograficas con las que apoyar las decisiones metodológicas en esto se vieron afectadas las secciones de referencias y metodología principalmente. Fue validada con la correspondiente consulta al libro de texto sugerido y revisión de la teoría y Claude
-(Anthropic, 2026) para asistir en la implementación, revisión y corrección de los códigos en R anexos empleados en el análisis estadístico.
+desarrollo de la tarea. Se utilizó Gemini (Google, 2026) \cite{google}
+para estructurar la plantilla base sobre la cual se desarrolló posteriormente el informe, lo que afectó a las secciones 1 a 6. Esta plantilla fue validada por nosotros, verificando su correcta visualización y que contuviera las secciones y subsecciones relevantes que trataríamos en este trabajo. Además, se utilizó para la búsqueda de referencias bibliográficas con las que apoyar las decisiones metodológicas, lo que afectó principalmente a las secciones de referencias y metodología. Esto fue validado mediante la consulta al libro de texto sugerido y la revisión de la teoría. Por otra parte, se utilizó Claude
+(Anthropic, 2026) \cite{anthropic} para asistir en la implementación, revisión y corrección de los códigos en R anexos empleados en el análisis estadístico.
 
-Asimismo, se utilizó ChatGPT (OpenAI, 2026) como apoyo
-en la formulación del apartado de Resultados tanto en como la interpretación de los resultados, la
-redacción. generación de tablas y organización del informe \LaTeX. Fue validado revisando que lo declarado en el informe se condiciera con el desarrollo de código, verificando el visualizado correcto de tablas.
+Asimismo, se utilizó ChatGPT (OpenAI, 2026) \cite{openai} como apoyo
+en la formulación del apartado de Resultados, tanto en la interpretación de los resultados como en la
+redacción, la generación de tablas y la organización del informe en \LaTeX. Esto fue validado revisando que lo declarado en el informe se condijera con el desarrollo del código y verificando la correcta visualización de las tablas.
 
 La revisión de los códigos, la verificación de los
 resultados y la interpretación final del análisis
 son responsabilidad de los autores.
 
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 \bibitem{dunn} Dunn, P. K., \& Smyth, G. K. (2018). \textit{Generalized Linear Models With Examples in R}. Springer.
 \bibitem{fox} Fox, J., \& Monette, G. (1992). Generalized collinearity diagnostics. \textit{Journal of the American Statistical Association}, 87(417), 178--183.
 \bibitem{mccullagh} McCullagh, P., \& Nelder, J. A. (1989). \textit{Generalized Linear Models} (2nd ed.). Chapman \& Hall.
@@ -1248,6 +1318,7 @@ son responsabilidad de los autores.
 \bibitem{verhoef} Ver Hoef, J. M., \& Boveng, P. L. (2007). Quasi-Poisson vs. negative binomial regression: How should we model overdispersed count data? \textit{Ecology}, 88(11), 2766--2772.
 \bibitem{google} Google (2026). Gemini [Modelo de lenguaje de gran escala].
 \bibitem{openai} OpenAI (2026). ChatGPT [Modelo de lenguaje de gran escala].
+\bibitem{anthropic} Anthropic (2026). Claude [Modelo de lenguaje de gran escala].
 \end{thebibliography}
 
 \end{document}
