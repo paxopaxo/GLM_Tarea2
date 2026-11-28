@@ -171,14 +171,14 @@ Correspondientes al período comprendido entre diciembre de 2017 y noviembre de 
 
 \begin{figure}[htbp]
     \centering
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}[b]{0.8\textwidth}
         \centering
         \includegraphics[width=\textwidth]{clima.png}
         \caption{Estados de precipitación ($n = 8\,465$).}
         \label{fig:precipitacion}
     \end{subfigure}
     \hfill
-    \begin{subfigure}[b]{0.48\textwidth}
+    \begin{subfigure}[b]{0.8\textwidth}
         \centering
         \includegraphics[width=\textwidth]{mcorr.png}
         \caption{Matriz de correlaciones de Pearson.}
@@ -332,8 +332,23 @@ Asimismo, la correlación de Pearson entre temperatura y número de arriendos es
         \caption{Demanda por deciles de velocidad del viento.}
         \label{fig:box_viento}
     \end{subfigure}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{B-P temp.png}
+        \caption{Demanda por rangos de temperatura}
+        \label{fig:box_humedad}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{B-P hr_dia.png}
+        \caption{Demanda por hora del día.}
+        \label{fig:box_humedad}
+    \end{subfigure}
     \caption{Distribución de la demanda horaria de bicicletas según factores temporales y climáticos.}
     \label{fig:eda_boxplots}
+
+
 \end{figure}
 \newpage
 
@@ -535,7 +550,7 @@ Estas cantidades son criterios descriptivos; no tienen asignado un nivel de sign
 \textbf{Depuración de efectos principales.} Se parte del modelo aditivo completo. Se evalúa el incremento porcentual de devianza al retirar cada efecto principal, respecto a la devianza del modelo completo.
 
 Como regla de trabajo se elimina un efecto si dicho incremento es inferior a $0,01\%$. Este umbral permite retirar términos con aporte prácticamente nulo sin descartar efectos principales que podrían participar en interacciones.
-\newpage
+
 \textbf{Selección de interacciones.} A partir del modelo aditivo depurado se evalúan las 45 interacciones de segundo orden (pares de sus 10 variables).
 
 En cada iteración:
@@ -576,7 +591,7 @@ Para evaluar el cumplimiento de los supuestos estructurales del modelo seleccion
     \[
     D_i = \frac{r_{P,i}^2}{p\,\widehat{\phi}}\left(\frac{h_{ii}}{(1 - h_{ii})^2}\right),
     \]
-    utilizando como referencia heurística el corte $D_i > 4/n$, donde $r_{P,i} = (y_i - \widehat{\mu}_i)/\sqrt{\widehat{\mu}_i}$ es el residuo de Pearson. Para evaluar la estabilidad del ajuste, se reestimó el modelo excluyendo las cinco observaciones con mayor distancia de Cook y se comparó la variación en los coeficientes estimados y en el parámetro de dispersión $\widehat{\phi}$ paraver que tanto efecto tenian esas observaciones.
+    utilizando como referencia el corte $D_i > 4/n$, donde $r_{P,i} = (y_i - \widehat{\mu}_i)/\sqrt{\widehat{\mu}_i}$ es el residuo de Pearson. Para evaluar la estabilidad del ajuste, se reestimó el modelo excluyendo las 10 observaciones con mayor distancia de Cook y se comparó la variación en los coeficientes estimados y en el parámetro de dispersión $\widehat{\phi}$ paraver que tanto efecto tenian esas observaciones.
 
     \item \textbf{Autocorrelación temporal:} Dada la naturaleza horaria consecutiva de los registros, se inspeccionó la función de autocorrelación muestral (ACF) de los residuos de Pearson hasta el rezago $k = 40$ para evaluar el supuesto de independencia condicional entre observaciones.
 
@@ -681,7 +696,6 @@ y explica el $80,14\%$ de la devianza del modelo
 nulo.
 Sobre este modelo se realizó la posterior
 incorporación de interacciones.
-\newpage
 \subsection{Selección de interacciones}
 
 De las 45 interacciones evaluadas individualmente respecto del modelo base, el procedimiento implementado preseleccionó diez. La Tabla~\ref{tab:res_candidatas} presenta sus reducciones de devianza y el número de parámetros adicionales. La última columna permite comparar descriptivamente el aporte de cada interacción en relación con su complejidad.
@@ -738,7 +752,6 @@ En particular, temperatura--radiación pasó de aportar un $8,09\%$ individualme
 Desde el punto de vista de la parsimonia, temperatura--estación y humedad--lluvia proporcionan mejoras relativamente grandes con pocos parámetros.$\\$
 Por el contrario, hora--estación aporta una reducción del $2,35\%$ con 69 parámetros adicionales. En consecuencia, el modelo obtenido mejora el ajuste, pero no se puede afirmar que sea el más parsimonioso ni que haya sido seleccionado exclusivamente por reducción de devianza por parámetro.
 
-\newpage
 
 \subsection{Modelo seleccionado e interpretación}
 
@@ -764,9 +777,8 @@ con los coeficientes de interacción iguales a cero en sus respectivas categorí
 \[
 \exp(\widehat\lambda+\widehat\xi u),
 \]
-donde $\widehat\lambda\approx1,99$ es el coeficiente principal de lluvia registrado en la sesión. Su interpretación aislada corresponde a humedad cero y no representa la asociación general de la lluvia con la demanda. Como no se dispone del coeficiente numérico de la interacción, no se cuantifica dicha razón para otros niveles de humedad. El registro tampoco contiene la tabla completa de coeficientes del modelo final, por lo que las demás interpretaciones se limitan a la estructura de las interacciones.
-
-\newpage
+donde $\widehat\lambda\approx1,99$ es el coeficiente principal de lluvia registrado en la sesión. $\\$
+Su interpretación aislada corresponde a humedad cero y no representa la asociación general de la lluvia con la demanda.
 
 \subsection{Evaluación descriptiva del ajuste}
 
@@ -863,12 +875,16 @@ con la cantidad de bicicletas arrendadas por hora en la
 ciudad de Seúl?
 
 Los resultados obtenidos muestran que las condiciones
-climáticas y temporales contribuyen a explicar el
-comportamiento de la demanda horaria de bicicletas.
-En particular, variables como la temperatura, la humedad,
-la presencia de lluvia, la estación del año y la hora
-del día permiten representar las variaciones observadas
-en la cantidad de arriendos.
+climáticas y temporales permiten explicar una parte
+importante del comportamiento de la demanda horaria de
+bicicletas. En particular, la hora del día, la temperatura,
+la estación del año y la presencia de lluvia son variables
+que presentan aportes importantes al ajuste del modelo.
+
+En contraste, la exclusión de la visibilidad genera un
+incremento de devianza de aproximadamente $0,00016\%$,
+por lo que se decidió prescindir de esta variable,
+considerando el principio de parsimonia.
 
 El modelo aditivo explica el $80,14\%$ de la devianza
 del modelo nulo, mientras que la incorporación de
@@ -876,94 +892,316 @@ interacciones permite aumentar este porcentaje al
 $90,25\%$, reduciendo la devianza residual en un
 $50,91\%$ respecto del modelo aditivo.
 
-Estos resultados muestran que considerar conjuntamente
-los efectos climáticos y temporales permite obtener
-una mejor representación de la demanda que aquella
-proporcionada únicamente por los efectos principales.
-Sin embargo, esta mejora implica un aumento considerable
-en el número de parámetros del modelo.
+Esto indica que considerar únicamente los efectos
+principales no permite representar completamente las
+relaciones presentes en los datos. En particular,
+las interacciones permiten que la asociación de una
+covariable con la demanda dependa de los valores
+o categorías de otras covariables.
 
-\medskip
+Sin embargo, esta mejora implica aumentar el número
+de parámetros estimables de 40 a 274, lo que evidencia
+un compromiso entre la calidad del ajuste y la
+parsimonia del modelo.
+
+Respecto de la capacidad predictiva, el modelo final
+presentó un RMSE promedio de validación cruzada de
+$216,25$ y un MAE de $131,66$ bicicletas por hora,
+frente a los valores de $318,99$ y $212,37$,
+respectivamente, obtenidos con el modelo aditivo.
+
+Por consiguiente, bajo la especificación considerada,
+la incorporación de interacciones permite representar
+de mejor manera la demanda observada y obtener menores
+errores de predicción en las particiones evaluadas.
+
+\bigskip
+\newpage
 
 \textbf{Pregunta secundaria:}
 ¿De qué manera la estación del año y la franja horaria
 modulan el efecto marginal de la temperatura sobre
 los arriendos de bicicletas?
 
-La incorporación de las interacciones temperatura--estación
-y temperatura--hora permite representar un efecto de la
-temperatura que varía según la época del año y la hora
-del día.
+Para responder esta pregunta, se consideran los términos
+del predictor lineal del modelo final asociados a la
+temperatura. En particular, debido a las interacciones
+temperatura--estación y temperatura--hora, la pendiente
+asociada a la temperatura depende de la estación $j$
+y de la hora $h$ consideradas.
 
-La primera interacción proporciona una reducción de
-devianza del $20,97\%$ respecto del modelo aditivo,
-incorporando solamente tres parámetros adicionales.
-Por su parte, la interacción temperatura--hora
-proporciona una reducción del $12,51\%$ respecto
-del modelo del paso anterior, incorporando 23 parámetros.
-
-Por lo tanto, una especificación que permite variar
-el efecto de la temperatura según la estación y la hora
-presenta un mejor ajuste que aquella que supone un
-efecto constante.
-
-En particular, ante un aumento de un grado Celsius,
-la variación porcentual de la demanda esperada está
-determinada por
+Dicha pendiente está dada por
 
 \[
+b_{jh}=\beta_T+a_j+c_h,
+\]
+
+donde:
+
+\begin{itemize}
+    \item $\beta_T$ corresponde al coeficiente asociado
+    al efecto principal de la temperatura.
+
+    \item $a_j$ corresponde al coeficiente de interacción
+    entre la temperatura y la estación $j$.
+
+    \item $c_h$ corresponde al coeficiente de interacción
+    entre la temperatura y la hora $h$.
+\end{itemize}
+
+Para las categorías de referencia, correspondientes
+a otoño y a las 00:00 horas, se tiene $a_j=0$ y $c_h=0$,
+respectivamente.
+
+Dado que el modelo cuasi-Poisson utiliza una función
+de enlace logarítmica, se cumple que
+
+\[
+\log(\mu_i)=\eta_i,
+\qquad
+\mu_i=\exp(\eta_i).
+\]
+
+Por lo tanto, el efecto marginal de la temperatura
+sobre el logaritmo de la demanda esperada está dado por
+
+\[
+\frac{\partial\log(\mu_i)}{\partial T_i}
+=\beta_T+a_j+c_h=b_{jh}.
+\]
+
+Aplicando la regla de la cadena, se obtiene el efecto
+marginal sobre la demanda esperada en su escala original:
+
+\[
+\frac{\partial\mu_i}{\partial T_i}
+=
+\mu_i(\beta_T+a_j+c_h).
+\]
+\newpage
+Esta expresión representa la tasa de cambio instantánea
+de la cantidad esperada de bicicletas arrendadas respecto
+de la temperatura. Su magnitud depende tanto de la
+pendiente $b_{jh}$ como de la demanda esperada $\mu_i$.
+
+Para facilitar la interpretación y comparación entre
+las distintas estaciones y horas del día, se considera
+la razón de medias esperadas ante un aumento de un
+grado Celsius, manteniendo constantes las demás
+covariables.
+
+Esta razón está dada por
+
+\begin{align*}
+\frac{\mu(T_i+1)}{\mu(T_i)}
+&=\frac{\exp(\eta_i+b_{jh})}
+        {\exp(\eta_i)}\\
+&=\exp(b_{jh})\\
+&=\exp(\beta_T+a_j+c_h).
+\end{align*}
+
+El factor exponencial $\exp(b_{jh})$ representa el
+factor multiplicativo por el cual cambia la demanda
+esperada ante un aumento de un grado Celsius,
+para una estación y hora determinadas.
+
+En particular:
+
+\begin{itemize}
+    \item Si $\exp(b_{jh})>1$, la demanda esperada
+    aumenta al incrementar la temperatura.
+
+    \item Si $\exp(b_{jh})<1$, la demanda esperada
+    disminuye al incrementar la temperatura.
+
+    \item Si $\exp(b_{jh})=1$, la demanda esperada
+    permanece constante ante dicho incremento.
+\end{itemize}
+
+En consecuencia, utilizando las estimaciones de los
+coeficientes del modelo final, la variación porcentual
+estimada de la demanda esperada se calcula mediante
+
+\[
+\Delta_{\%}(j,h)
+=
 100\left[
 \exp(\widehat{\beta}_T+\widehat{a}_j+
 \widehat{c}_h)-1
-\right]\%.
+\right].
 \]
 
-De esta manera, la asociación entre la temperatura
-y la demanda depende tanto de la estación como de
-la hora considerada. No obstante, con los resultados
-numéricos disponibles no es posible establecer
-en qué estaciones y horarios esta asociación alcanza
-su mayor o menor magnitud.
+Esta cantidad representa el cambio porcentual exacto
+de la demanda esperada ante un incremento de un grado
+Celsius, bajo la especificación del modelo.
+
+Se calculó esta cantidad para las 96 combinaciones
+posibles entre las cuatro estaciones del año y las
+24 horas del día. La Tabla~\ref{tab:conclusion_temperatura}
+presenta los resultados correspondientes a algunas
+horas representativas.
+
+\begin{table}[htbp]
+\centering
+\caption{Variación porcentual estimada de la demanda
+esperada ante un aumento de $1\,^\circ$C.}
+\label{tab:conclusion_temperatura}
+\begin{tabular}{lrrrr}
+\toprule
+Hora & Otoño & Primavera & Verano & Invierno \\
+\midrule
+00:00 & 4,31 & 6,83 & -2,58 & 6,12 \\
+06:00 & 3,35 & 5,85 & -3,47 & 5,14 \\
+08:00 & 1,28 & 3,73 & -5,41 & 3,03 \\
+12:00 & 1,79 & 4,25 & -4,93 & 3,55 \\
+18:00 & 3,03 & 5,52 & -3,78 & 4,81 \\
+20:00 & 4,88 & 7,41 & -2,05 & 6,69 \\
+23:00 & 4,55 & 7,08 & -2,35 & 6,36 \\
+\bottomrule
+\end{tabular}
+\end{table}
+\newpage
+\paragraph{Ejemplo:}
+
+Para la primavera a las 20:00 horas, se obtuvo una
+pendiente estimada de
+
+\[
+\widehat{b}_{jh}=0,07150.
+\]
+
+Por lo tanto, la razón de medias estimada es
+
+\[
+\exp(0,07150)\approx 1,0741.
+\]
+
+Esto significa que, ante un aumento de un grado Celsius,
+la demanda esperada se multiplica aproximadamente
+por $1,0741$, manteniendo constantes las demás
+covariables.
+
+Equivalentemente, la variación porcentual está dada por
+
+\[
+100(1,0741-1)=7,41\%.
+\]
+
+Por consiguiente, durante la primavera a las 20:00 horas,
+un aumento de un grado Celsius se asocia con un
+incremento estimado del $7,41\%$ en la cantidad
+esperada de bicicletas arrendadas.
+
+En contraste, para el verano a las 08:00 horas,
+se obtuvo una pendiente estimada de
+
+\[
+\widehat{b}_{jh}=-0,05558.
+\]
+
+La razón de medias correspondiente es
+
+\[
+\exp(-0,05558)\approx 0,9459.
+\]
+
+En este caso, la demanda esperada se multiplica por
+$0,9459$, lo que equivale a una disminución de
+
+\[
+100(0,9459-1)=-5,41\%.
+\]
+
+\paragraph{Comparación entre estaciones.}
+
+Durante la primavera se obtiene la mayor asociación
+positiva entre la temperatura y la demanda esperada,
+con incrementos estimados entre $3,73\%$ y $7,41\%$,
+dependiendo de la hora del día.
+
+En invierno, los incrementos se encuentran entre
+$3,03\%$ y $6,69\%$, mientras que en otoño varían
+entre $1,28\%$ y $4,88\%$.
+
+En contraste, durante el verano se observa una
+asociación negativa para las 24 horas del día,
+con disminuciones estimadas entre $2,05\%$ y
+$5,41\%$ ante un aumento de un grado Celsius.
+
+Una posible explicación de este comportamiento es que,
+durante las estaciones más frías, un aumento de la
+temperatura podría generar condiciones más favorables
+para utilizar bicicletas, mientras que durante el
+verano las temperaturas elevadas podrían desincentivar
+su utilización.
+
+Sin embargo, esta explicación constituye una
+interpretación contextual y no una relación causal
+demostrada por el modelo.
+
+\paragraph{Comparación entre horas del día.}
+
+A las 08:00 horas se obtiene la menor variación
+porcentual estimada en todas las estaciones.
+En otoño, primavera e invierno esto corresponde
+al menor incremento porcentual, mientras que
+en verano corresponde a la mayor disminución.
+
+Por otra parte, a las 20:00 horas se obtiene
+la mayor variación porcentual estimada en todas
+las estaciones. En verano, esto corresponde a
+la menor disminución de la demanda esperada.
+
+Por consiguiente, bajo la especificación del modelo,
+la estación del año modifica tanto la magnitud como
+el signo de la asociación entre la temperatura y
+la demanda esperada, mientras que la hora del día
+modifica su magnitud dentro de cada estación.
+
+Estos resultados permiten comprender la importancia
+de incorporar las interacciones temperatura--estación
+y temperatura--hora, puesto que un modelo aditivo
+impondría una misma variación porcentual de la
+demanda ante cambios de temperatura, independientemente
+de la estación y la hora consideradas.
 
 \subsection{Limitaciones y posibles extensiones}
 
-La principal limitación del modelo corresponde a la
-presencia de autocorrelación temporal en los residuos.
-Si bien el modelo cuasi-Poisson permite considerar
-la sobredispersión, no corrige la dependencia entre
-observaciones.
+La principal limitación del modelo es la autocorrelación
+temporal de los residuos, puesto que el modelo cuasi-Poisson
+permite considerar la sobredispersión, pero no la dependencia
+entre observaciones. Si bien el parámetro de dispersión
+disminuyó de $104,89$ a $50,89$, la sobredispersión sigue
+siendo considerable.
 
-Por esta razón, los resultados se interpretan desde
-una perspectiva descriptiva, considerando la reducción
-de devianza, la parsimonia y el desempeño predictivo,
-sin establecer conclusiones basadas en la significancia
-estadística de los coeficientes.
+Debido a la dependencia temporal, los resultados se
+interpretan desde una perspectiva descriptiva, sin recurrir
+a pruebas de significancia estadística. Asimismo, aunque
+la validación cruzada muestra una mejora en la capacidad
+predictiva, esta no garantiza la ausencia de sobreajuste.
 
-Como posible extensión, se propone incorporar una
-estructura de dependencia temporal que permita
-representar la relación entre observaciones consecutivas
-y mejorar la validez de la inferencia estadística.
+Como posibles extensiones, se propone incorporar estructuras
+de dependencia temporal, estudiar relaciones no lineales
+entre las covariables y la demanda, y buscar modelos más
+parsimoniosos que permitan conservar la calidad del ajuste
+y la capacidad predictiva.
 \newpage
 \FloatBarrier
 \section{Declaración de uso de herramientas de inteligencia artificial}
 En la elaboración del presente informe se utilizaron
 herramientas de inteligencia artificial como apoyo al
 desarrollo de la tarea. Se utilizó Gemini (Google, 2026)
-para estructurar la plantilla del informe y Claude
-(Anthropic, 2026) para asistir en la implementación,
-revisión y corrección de los códigos en R empleados
-en el análisis estadístico.
+para estructurar la plantilla base donde se desarrollo posteriormente el informe afectando las secciones 1-6. Fue validada por nosotros donde nos preocupamos de la correcta visualización y que contenga las secciones y subsecciones relevantes que trataríamos en este trabajo. Además para la busqueda de referencias bibliograficas con las que apoyar las decisiones metodológicas en esto se vieron afectadas las secciones de referencias y metodología principalmente. Fue validada con la correspondiente consulta al libro de texto sugerido y revisión de la teoría y Claude
+(Anthropic, 2026) para asistir en la implementación, revisión y corrección de los códigos en R anexos empleados en el análisis estadístico.
 
 Asimismo, se utilizó ChatGPT (OpenAI, 2026) como apoyo
 en la formulación del apartado de Resultados tanto en como la interpretación de los resultados, la
-redacción. generacion de tablas y organización del informe \LaTeX. 
-
-
-%%%%Como escribo esta wea XDDDD ?????
+redacción. generación de tablas y organización del informe \LaTeX. Fue validado revisando que lo declarado en el informe se condiciera con el desarrollo de código, verificando el visualizado correcto de tablas.
 
 La revisión de los códigos, la verificación de los
 resultados y la interpretación final del análisis
 son responsabilidad de los autores.
+
 \begin{thebibliography}{9}
 \bibitem{dunn} Dunn, P. K., \& Smyth, G. K. (2018). \textit{Generalized Linear Models With Examples in R}. Springer.
 \bibitem{fox} Fox, J., \& Monette, G. (1992). Generalized collinearity diagnostics. \textit{Journal of the American Statistical Association}, 87(417), 178--183.
