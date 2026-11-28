@@ -173,14 +173,14 @@ Correspondientes al período comprendido entre diciembre de 2017 y noviembre de 
     \centering
     \begin{subfigure}[b]{0.8\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{clima.png}
+        \includegraphics[width=\textwidth]{plots/01_eda_estados_precipitacion.png}
         \caption{Estados de precipitación ($n = 8\,465$).}
         \label{fig:precipitacion}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.8\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{mcorr.png}
+        \includegraphics[width=\textwidth]{plots/01_eda_matriz_correlacion.png}
         \caption{Matriz de correlaciones de Pearson.}
         \label{fig:correlaciones}
     \end{subfigure}
@@ -191,6 +191,8 @@ Correspondientes al período comprendido entre diciembre de 2017 y noviembre de 
 Debido a la gran proporción de horas sin precipitaciones (Figura~\ref{fig:precipitacion}), las variables lluvia y nieve fueron redefinidas como variables indicadoras según la presencia (valor 1) o ausencia (valor 0). Esta redefinición permite comparar las horas con y sin precipitaciones sin distinguir su intensidad.
 
 La hora del día se consideró como variable categórica, pues no se espera una relación lineal entre la hora y la demanda.
+
+La base original no incluye el día de la semana, por lo que esta variable se construyó a partir de la fecha de cada registro. Se definió como una variable categórica de siete niveles, de lunes a domingo, con el lunes como categoría de referencia. Su inclusión permite distinguir los patrones de uso de los días hábiles y del fin de semana, que no quedan recogidos por la variable feriado.
 \begin{table}[htbp]
 \centering\small
 \caption{Variables consideradas en el análisis de regresión.}
@@ -208,6 +210,7 @@ Visibilidad & Continua & 27--2000 (unidades de 10 m) \\
 Radiación solar & Continua & 0--3,52 (MJ/m$^2$) \\
 Estación & Categórica & Otoño, primavera, verano, invierno \\
 Feriado & Categórica & Sí, no \\
+Día de la semana & Categórica & Lunes, martes, $\ldots$, domingo \\
 Lluvia & Binaria & Presencia o ausencia \\
 Nieve & Binaria & Presencia o ausencia \\
 \bottomrule
@@ -268,6 +271,14 @@ Lluvia   & Sí & 516  & 167,26 \\
 \midrule
 Nieve    & Sí & 443  & 185,10 \\
          & No & 8022 & 759,20 \\
+\midrule
+Día de la semana & Lunes     & 1248 & 730,56 \\
+                 & Martes    & 1152 & 745,31 \\
+                 & Miércoles & 1200 & 769,96 \\
+                 & Jueves    & 1200 & 718,33 \\
+                 & Viernes   & 1224 & 776,42 \\
+                 & Sábado    & 1217 & 727,60 \\
+                 & Domingo   & 1224 & 637,41 \\
 \bottomrule
 \end{tabular}
 \end{adjustbox}
@@ -299,20 +310,21 @@ Las horas de mayor demanda promedio corresponden a las 18:00 (1554 arriendos) y 
 $\\$
 Por estación, los promedios son 1034 en verano, 924 en otoño, 746 en primavera y 226 en invierno.
 En presencia de lluvia, se registran en promedio 167 arriendos por hora, frente a 766 en ausencia de lluvia.
+Según el día de la semana, la demanda promedio es similar de lunes a sábado (entre 718 y 776 arriendos por hora) y disminuye el domingo, con 637 arriendos por hora. Las diferencias entre días son menores que las observadas entre horas del día, lo que sugiere que el día de la semana influye principalmente en la forma del perfil horario de la demanda.
 Asimismo, la correlación de Pearson entre temperatura y número de arriendos es de $0{,}563$. Estas relaciones son descriptivas y no controlan el efecto de las demás covariables.
 
 \begin{figure}[htbp]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{B-P estacion.png}
+        \includegraphics[width=\textwidth]{plots/01_eda_boxplot_estacion.png}
         \caption{Demanda por estación del año.}
         \label{fig:box_estacion}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{B-P feriados.png}
+        \includegraphics[width=\textwidth]{plots/01_eda_boxplot_feriado.png}
         \caption{Demanda según día feriado.}
         \label{fig:box_feriado}
     \end{subfigure}
@@ -321,29 +333,38 @@ Asimismo, la correlación de Pearson entre temperatura y número de arriendos es
 
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{B-P Humedad.png}
+        \includegraphics[width=\textwidth]{plots/01_eda_boxplot_humedad.png}
         \caption{Demanda por deciles de humedad.}
         \label{fig:box_humedad}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{B-P viento.png}
+        \includegraphics[width=\textwidth]{plots/01_eda_boxplot_viento.png}
         \caption{Demanda por deciles de velocidad del viento.}
         \label{fig:box_viento}
     \end{subfigure}
 
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{B-P temp.png}
+        \includegraphics[width=\textwidth]{plots/01_eda_boxplot_temperatura.png}
         \caption{Demanda por rangos de temperatura}
-        \label{fig:box_humedad}
+        \label{fig:box_temp}
     \end{subfigure}
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{B-P hr_dia.png}
+        \includegraphics[width=\textwidth]{plots/01_eda_boxplot_hora.png}
         \caption{Demanda por hora del día.}
-        \label{fig:box_humedad}
+        \label{fig:box_hora}
+    \end{subfigure}
+
+    \vspace{0.3cm}
+
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{plots/01_eda_boxplot_dia_semana.png}
+        \caption{Demanda por día de la semana.}
+        \label{fig:box_dia_semana}
     \end{subfigure}
     \caption{Distribución de la demanda horaria de bicicletas según factores temporales y climáticos.}
     \label{fig:eda_boxplots}
@@ -485,7 +506,7 @@ El predictor lineal inicial es:
 donde:
 \begin{itemize}
     \item $H_i$: Hora del día, de 0 a 23.
-    \item $W_i$: Día de la semana (martes a domingo).
+    \item $W_i$: Día de la semana, construido a partir de la fecha (categoría de referencia: lunes).
     \item $T_i$: Temperatura en grados Celsius.
     \item $U_i$: Humedad relativa en porcentaje.
     \item $V_i$: Velocidad del viento en m/s.
@@ -524,8 +545,8 @@ En la Figura~\ref{fig:varmedia} se representan los pares $(\overline\mu_j,\wideh
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.82\textwidth]{estructura_media_varianza.pdf}
-\caption{Relación media--varianza observada en 15 grupos y curvas teóricas de los modelos de conteo evaluados. Para la binomial negativa se utiliza $\widehat\theta\approx4{,}23$ del análisis original.}
+\includegraphics[width=0.82\textwidth]{plots/02_fit_media_varianza_modelo_base.png}
+\caption{Relación media--varianza observada en 15 grupos y curvas teóricas de los modelos de conteo evaluados. Las curvas usan $\widehat\phi\approx104{,}9$, estimado en el modelo cuasi-Poisson aditivo, y $\widehat\theta\approx4{,}32$, estimado en un modelo binomial negativo con el mismo predictor aditivo.}
 \label{fig:varmedia}
 \end{figure}
 
@@ -795,13 +816,10 @@ La Tabla~\ref{tab:res_ajuste} muestra que la incorporación de interacciones red
 
 \subsection{Diagnóstico del ajuste y limitaciones de la inferencia}
 
-% Opcional: exportar el panel A--D que ya produce fit2.R desde RStudio
-% como diagnostico_fit2.pdf. No se requiere código nuevo.
-\IfFileExists{diagnostico_fit2.pdf}{%
 \begin{figure}[htbp]
-\centering\includegraphics[width=.95\textwidth]{diagnostico_fit2.pdf}
+\centering\includegraphics[width=.95\textwidth]{plots/02_fit_diagnostico_residuos_m_fwd.png}
 \caption{Diagnóstico de residuos y observaciones influyentes del modelo final.}
-\end{figure}}{}
+\end{figure}
 
 El registro reporta una distancia de Cook máxima de aproximadamente $0,019$. Entre las diez observaciones con mayor distancia de Cook destaca la del 19 de abril de 2018 a las 08:00, con 20 arriendos observados frente a 1582 ajustados. Cuatro de estas diez observaciones corresponden a horas con lluvia, aunque solo 516 de las 8465 horas de la muestra presentan lluvia.
 
