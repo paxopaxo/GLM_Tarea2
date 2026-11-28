@@ -534,42 +534,37 @@ Si bien las estructuras cuasi-Poisson y binomial negativa representan mejor el c
 
 \newpage
 
-\subsection{Selección de modelos mediante devianza y parsimonia}\label{sec:seleccion}
-Dada la naturaleza temporal de los registros y la autocorrelación detectada en los residuos en los análisis previos, no se utilizan pruebas $F$, pruebas de razón de verosimilitud ni valores-$p$ para seleccionar el modelo. En su lugar, se considera exclusivamente la disminución de devianza y el número de parámetros estimables que requiere cada especificación.
+\subsection{Selección de modelos mediante pruebas $F$ y reducción de devianza}\label{sec:seleccion}
+Para seleccionar los términos del predictor lineal se utilizaron dos criterios en conjunto: el valor-$p$ de una prueba $F$ y la reducción porcentual de devianza.
 
-Sean $M_R\subset M_C$ dos modelos anidados, con devianzas residuales $D_R,D_C$ y rangos $p_R,p_C$. Se definen
+Sean $M_R\subset M_C$ dos modelos anidados, con devianzas residuales $D_R,D_C$ y número de parámetros estimables $p_R,p_C$. Se definen
 \begin{equation}\label{eq:criterio}
-\Delta D=D_R-D_C,\qquad R_D=100\frac{\Delta D}{D_R},\qquad q=p_C-p_R.
+\Delta D=D_R-D_C,\qquad R_D=100\frac{\Delta D}{D_R},\qquad q=p_C-p_R,
 \end{equation}
-La cantidad $R_D$ representa el porcentaje de reducción de devianza respecto al modelo reducido. Para considerar la parsimonia se emplea adicionalmente
-\[E_D=\frac{R_D}{q},\quad q>0,\]
-que mide la reducción porcentual de devianza por parámetro adicional. Así, dos interacciones con similar reducción pueden distinguirse por su complejidad.
+donde $R_D$ es el porcentaje de reducción de devianza respecto al modelo reducido y $q$ el número de parámetros adicionales. Como el modelo cuasi-Poisson no tiene una verosimilitud completa, para comparar ambos modelos se utilizó la prueba $F$ \cite{mccullagh,dunn}
+\[
+F=\frac{\Delta D/q}{\widehat\phi_C}\sim F_{q,\,n-p_C},
+\]
+donde $\widehat\phi_C$ es la dispersión estimada del modelo completo.
 
-Estas cantidades son criterios descriptivos; no tienen asignado un nivel de significancia ni una distribución .
+\textbf{Depuración de efectos principales.} Se partió del modelo aditivo con las 11 covariables y se evaluó, mediante la prueba $F$, la eliminación de cada efecto principal manteniendo los restantes. La única variable no significativa al $5\%$ fue la visibilidad, cuya eliminación además prácticamente no modificó la devianza, por lo que se excluyó. El modelo resultante, con 10 covariables, se usó como modelo base.
 
-\textbf{Depuración de efectos principales.} Se parte del modelo aditivo completo. Se evalúa el incremento porcentual de devianza al retirar cada efecto principal, respecto a la devianza del modelo completo.
-
-Como regla de trabajo se elimina un efecto si dicho incremento es inferior a $0,01\%$. Este umbral permite retirar términos con aporte prácticamente nulo sin descartar efectos principales que podrían participar en interacciones.
-
-\textbf{Selección de interacciones.} A partir del modelo aditivo depurado se evalúan las 45 interacciones de segundo orden (pares de sus 10 variables).
-
-En cada iteración:
+\textbf{Preselección de interacciones.} Con las 10 covariables del modelo base se formaron las 45 interacciones de segundo orden posibles. Cada una se agregó por separado al modelo base y se consideró candidata si cumplía ambas condiciones:
 \begin{enumerate}
-\item Se ajusta por separado cada interacción no incorporada al modelo actual y se calcula $R_D$ y $q$.
-\item Se consideran elegibles las interacciones que reducen la devianza residual en al menos $2\%$ respecto al modelo actual y aportan al menos $0,25$ puntos porcentuales de reducción por parámetro adicional ($E_D\geq 0,25$).
-Esta segunda condición impide incorporar bloques muy grandes por una mejora total que no compensa su complejidad.
-\item Entre las elegibles se incorpora la que maximiza $E_D=R_D/q$; en caso de empate se prefiere la de menor $q$.
-\item Se repite el procedimiento recalculando las reducciones respecto al modelo actualizado. Se detiene cuando ninguna interacción restante cumple simultáneamente ambos umbrales.
+\item valor-$p$ de la prueba $F$ menor que $0{,}05$;
+\item reducción de devianza de al menos un $2\%$ ($R_D\geq 2$).
 \end{enumerate}
-El predictor lineal del modelo puede expresarse matricialmente como \(\boldsymbol{\eta}=X\boldsymbol{\beta}\), donde \(X\) corresponde a la matriz de diseño, cuyas columnas representan los efectos principales y las interacciones incorporadas en el modelo.
 
-Durante el procedimiento de selección se mantiene el principio de jerarquía, es decir, al incorporar una interacción entre dos variables, se conservan sus respectivos efectos principales.
+\textbf{Selección iterativa de interacciones.} Con las candidatas se construyó el modelo de manera progresiva:
+\begin{enumerate}
+\item En cada paso, cada candidata aún no incluida se agregó por separado al modelo actual y se calcularon su valor-$p$ y su $R_D$ respecto de dicho modelo.
+\item Se conservaron solo las candidatas que cumplían ambas condiciones: valor-$p<0{,}05$ y $R_D\geq 2$.
+\item Estas candidatas se ordenaron de menor a mayor valor-$p$ y se incorporó al modelo la de menor valor-$p$.
+\item Con el modelo actualizado se repitió el procedimiento con las candidatas restantes. El proceso terminó cuando ninguna de ellas cumplía ambas condiciones.
+\end{enumerate}
+Al incorporar una interacción se mantuvieron siempre los efectos principales de las variables involucradas.
 
-Por otra parte, la incorporación de interacciones puede generar columnas linealmente dependientes en la matriz de diseño, por lo que el número nominal de coeficientes no necesariamente coincide con el número efectivo de parámetros estimables.
-
-En consecuencia, para cuantificar el aumento de complejidad entre dos modelos anidados, se considera la diferencia entre los rangos de sus matrices de diseño.
-
-Esto permite evaluar la reducción de devianza obtenida por cada parámetro   adicional, favoreciendo la selección de modelos que presenten un equilibrio entre la calidad del ajuste y la parsimonia.
+\textbf{Limitaciones del criterio basado en valores-$p$.} La prueba $F$ supone observaciones independientes. Durante la selección se observó que prácticamente todas las comparaciones entregaban valores-$p$ extremadamente pequeños, muchos de ellos prácticamente cero, incluso para términos con aportes modestos a la devianza. Esto hizo sospechar que el supuesto de independencia no se cumplía, lo que se confirmó posteriormente en el diagnóstico de residuos, donde la autocorrelación muestra una dependencia temporal marcada entre registros horarios. Con observaciones dependientes, las pruebas $F$ tienden a declarar significativos términos que no necesariamente lo son. Por esta razón, los valores-$p$ se utilizaron solo como una regla para ordenar y filtrar términos, y no como evidencia inferencial formal. Por el mismo motivo se exigió además una reducción mínima de devianza del $2\%$, de modo que solo se incorporaran términos con relevancia práctica. Finalmente, la capacidad de generalización del modelo se evaluó mediante validación cruzada por bloques de días completos.
 \newpage
 
 \subsection{Diagnóstico del ajuste y validación predictiva}
