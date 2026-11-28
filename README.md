@@ -32,11 +32,8 @@ En `main.R` se eliminan las horas en que el servicio no estaba operativo (`Funct
     * Screening de las 45 interacciones por pares y selección hacia adelante (criterio: p < 0.05 y reducción de devianza ≥ 2 %).
     * Diagnóstico de residuos, observaciones influyentes, validación cruzada por bloques de días y ANOVA de modelos anidados.
     * Deja en memoria el modelo base `m_qpois` y el modelo final `m_fwd`.
-  * `efectos.R` — **Respuesta a la pregunta de investigación.** Traduce el modelo final a efectos interpretables: importancia de cada variable, razones de tasas con IC 95 % y efectos promedio por predicción (temperatura por estación, lluvia y perfil horario por tipo de día), con 3 gráficos.
   * `seed_cv.R` — Función `seed_cv()`: repite la validación cruzada por días con varias semillas para verificar que el resultado no depende de cómo se reparten los días en los pliegues.
 * `doc/` — Documentos anexos.
-* `SESION2.md` — Documentación detallada de `fit2.R`, `seed_cv.R` y `efectos.R`: criterios, resultados, decisiones y limitaciones.
-* `SESION_fit2.md` — Documentación de una versión **anterior** de la selección de interacciones (criterio por F, ya no se usa).
 
 ---
 ### 4. Orden de Ejecución
@@ -46,8 +43,7 @@ Los scripts dependen de los objetos que crea el anterior, por lo que deben ejecu
 source("code/main.R")     # 1. EDA y preparación de bike_data
 source("code/fit2.R")     # 2. Modelos, selección de interacciones y validación (requiere bike_data)
 source("code/seed_cv.R")  # 3. Validación cruzada con varias semillas (requiere bike_data, m_qpois y m_fwd)
-source("code/efectos.R")  # 4. Efectos interpretables y gráficos (requiere bike_data, m_fwd y m_qpois_nulo)
 ```
 
 * **Paquetes necesarios:** `tidyverse` (incluye `dplyr`, `ggplot2` y `lubridate`), `corrplot`, `MASS` y `car`.
-* **Tiempo aproximado:** ~3 minutos en total. La mayor parte se va en las validaciones cruzadas, que reajustan los modelos muchas veces.
+* **Tiempo aproximado:** ~2.5 minutos en total. La mayor parte se va en las validaciones cruzadas, que reajustan los modelos muchas veces.
