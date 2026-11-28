@@ -1,6 +1,9 @@
 library(MASS)
 library(car)
 
+# Carpeta donde se guardan todos los graficos
+dir.create("plots", showWarnings = FALSE)
+
 m_pois <- glm(count ~ hour + temp + humidity + wind + visibility +
                 solar_rad + seasons + holiday + rain + snow + weekday,
               family = poisson(link = "log"), data = bike_data)
@@ -92,6 +95,7 @@ legend("topleft",
        ),
        col = c("darkgreen", "blue", "red"),
        lwd = 2, lty = c(3, 1, 2), bty = "n")
+dev.copy(png, "plots/02_fit_media_varianza_modelo_base.png", width = 9, height = 6, units = "in", res = 300); dev.off()
 #############################
 
 
@@ -229,6 +233,8 @@ abline(h = 4 / nrow(bike_data), col = "red", lty = 2)
 # D. Autocorrelacion temporal de los residuos (datos horarios consecutivos)
 acf(residuals(m_fwd, type = "pearson"), main = "D. Autocorrelación Temporal (ACF)")
 
+dev.copy(png, "plots/02_fit_diagnostico_residuos_m_fwd.png", width = 11, height = 9, units = "in", res = 300); dev.off()
+
 par(mfrow = c(1, 1))
 
 # A2. Mismo grafico, agrupado en bins con igual numero de observaciones.
@@ -253,6 +259,7 @@ arrows(bin_df$eta, bin_df$res - 2 * bin_df$se, bin_df$eta, bin_df$res + 2 * bin_
        angle = 90, code = 3, length = 0.03, col = "darkblue")
 abline(h = 0, col = "red", lty = 2)
 lines(bin_df$eta, bin_df$res, col = "darkorange", lwd = 2)
+dev.copy(png, "plots/02_fit_residuos_por_bin_m_fwd.png", width = 8, height = 6, units = "in", res = 300); dev.off()
 
 
 ############## Observaciones influyentes y sensibilidad
@@ -386,6 +393,7 @@ legend("topleft",
        ),
        col = c("darkgreen", "blue", "red"),
        lwd = 2, lty = c(3, 1, 2), bty = "n")
+dev.copy(png, "plots/02_fit_media_varianza_m_fwd.png", width = 9, height = 6, units = "in", res = 300); dev.off()
 
 
 ############## 2. Tabla comparativa ANOVA de modelos anidados

@@ -6,6 +6,9 @@
 m <- m_fwd
 d <- bike_data
 
+# Carpeta donde se guardan todos los graficos
+dir.create("plots", showWarnings = FALSE)
+
 
 ############## 1. Importancia de cada variable
 # Para cada variable: se reajusta el modelo final SIN esa variable y SIN las interacciones
@@ -43,6 +46,7 @@ print(
          x = "Devianza perdida (%)", y = NULL, fill = NULL) +
     theme_minimal()
 )
+ggsave("plots/03_efectos_importancia_variables.png", width = 9, height = 5, dpi = 300)
 
 ############## 3. Efectos promedio por prediccion (variables con interaccion)
 # Idea: se predice con el modelo cambiando UNA sola variable y dejando todo lo demas igual
@@ -89,6 +93,7 @@ print(
          x = "Temperatura (°C)", y = "Arriendos esperados por hora", color = "Estacion") +
     theme_minimal()
 )
+ggsave("plots/03_efectos_temperatura_por_estacion.png", width = 9, height = 5, dpi = 300)
 
 # ---- 3b. Lluvia
 # El efecto se evalua SOLO en las horas en que efectivamente llovio: se compara la
@@ -138,6 +143,7 @@ print(
          x = "Hora del dia", y = "Arriendos por hora", color = NULL) +
     theme_minimal()
 )
+ggsave("plots/03_efectos_perfil_horario.png", width = 10, height = 5.5, dpi = 300)
 
 # ---- 3d. Estacion: arriendos predichos promedio
 cat("\nArriendos predichos promedio por estacion:\n")

@@ -4,6 +4,9 @@ library(tidyverse)
 library(corrplot)
 select <- dplyr::select
 
+# Carpeta donde se guardan todos los graficos
+dir.create("plots", showWarnings = FALSE)
+
 bike_data <- read.csv(
   "data/SeoulBikeData.csv",
   fileEncoding = "latin1",
@@ -41,6 +44,7 @@ bike_data %>%
     y = "Percentage of Hours (%)"
   ) +
   theme_minimal(base_size = 12)
+ggsave("plots/01_eda_estados_precipitacion.png", width = 7, height = 5, dpi = 300)
 
 bike_data <- bike_data %>%
   mutate(
@@ -70,6 +74,7 @@ num_vars <- bike_data %>%
 #matriz de correlacion pearson
 cor_mat <- cor(num_vars, method = "pearson")
 corrplot(cor_mat, method = "color", type = "lower", addCoef.col = "black", number.cex = 0.75, tl.col = "black")
+dev.copy(png, "plots/01_eda_matriz_correlacion.png", width = 8, height = 8, units = "in", res = 300); dev.off()
 
 
 # Eliminamos cuando no no está funcionando
@@ -99,24 +104,28 @@ ggplot(bike_data, aes(x = factor(hour), y = count)) +
     y = "Cantidad de bicicletas arrendadas"
   ) +
   theme_minimal()
+ggsave("plots/01_eda_boxplot_hora.png", width = 10, height = 5, dpi = 300)
 
 # cantidad bicis segun estacion
 ggplot(bike_data, aes(x = seasons, y = count)) +
   geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
   labs(title = "Bicicletas arrendadas por estación", x = "Estación", y = "Cantidad") +
   theme_minimal()
+ggsave("plots/01_eda_boxplot_estacion.png", width = 7, height = 5, dpi = 300)
 
 # segun feriado
 ggplot(bike_data, aes(x = holiday, y = count)) +
   geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
   labs(title = "Bicicletas arrendadas según día feriado", x = "Feriado", y = "Cantidad") +
   theme_minimal()
+ggsave("plots/01_eda_boxplot_feriado.png", width = 6, height = 5, dpi = 300)
 
 # segun dia de la semana
 ggplot(bike_data, aes(x = weekday, y = count)) +
   geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
   labs(title = "Bicicletas arrendadas por día de la semana", x = "Día de la semana", y = "Cantidad") +
   theme_minimal()
+ggsave("plots/01_eda_boxplot_dia_semana.png", width = 8, height = 5, dpi = 300)
 
 
 #variables continuas ( uso de bins )
@@ -127,18 +136,21 @@ ggplot(bike_data, aes(x = cut_number(temp, 10), y = count)) +
   geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
   labs(title = "Bicicletas arrendadas por rango de temperatura", x = "Temperatura (°C)", y = "Cantidad") +
   theme_minimal()
+ggsave("plots/01_eda_boxplot_temperatura.png", width = 10, height = 5, dpi = 300)
 
 # segun humedad
 ggplot(bike_data, aes(x = cut_number(humidity, 10), y = count)) +
   geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
   labs(title = "Bicicletas arrendadas por rango de humedad", x = "Humedad (%)", y = "Cantidad") +
   theme_minimal()
+ggsave("plots/01_eda_boxplot_humedad.png", width = 10, height = 5, dpi = 300)
 
 # segun velocidad viento 
 ggplot(bike_data, aes(x = cut_number(wind, 10), y = count)) +
   geom_boxplot(fill = "steelblue", alpha = 0.6, outlier.alpha = 0.2) +
   labs(title = "Bicicletas arrendadas por velocidad del viento", x = "Viento (m/s)", y = "Cantidad") +
   theme_minimal()
+ggsave("plots/01_eda_boxplot_viento.png", width = 10, height = 5, dpi = 300)
 
 
 
