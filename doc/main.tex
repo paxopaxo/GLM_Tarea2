@@ -687,6 +687,16 @@ observaciones. Debido a la elevada proporción de
 registros sin precipitaciones, se utilizaron
 variables indicadoras de presencia o ausencia,
 en lugar de sus respectivas intensidades.
+Además, en un primer ajuste del modelo aditivo
+con la lluvia y la nieve como variables continuas
+(en mm y cm), la dispersión estimada resultó
+enorme, $\widehat\phi\approx1{,}5\times10^{6}$,
+frente a $\widehat\phi\approx104{,}9$ al
+utilizar las variables indicadoras, y la devianza
+residual también fue mayor ($974\,882$ frente a
+$904\,697$). Por este motivo, y por simplicidad
+en la interpretación, se optó por mantener ambas
+variables en forma binaria.
 \newpage
 
 Finalmente, los valores del factor de inflación
@@ -739,35 +749,48 @@ Hora $\times$ Día de la semana & 138 & 18,44 & 0,134 \\\bottomrule
 
 Las interacciones temperatura--radiación y temperatura--estación destacan por su reducción de devianza por parámetro adicional. En cambio, hora--día de la semana logra una reducción total del $18,44\%$, pero requiere 138 parámetros adicionales, lo que evidencia un mayor costo en complejidad.
 
-La secuencia efectivamente obtenida en \texttt{fit2.R} se presenta en la Tabla~\ref{tab:res_pasos}.
-
-Aquí se examinan únicamente las reducciones de devianza y la complejidad de los modelos obtenidos.
+La Tabla~\ref{tab:res_pasos} presenta la secuencia de incorporación obtenida en la selección iterativa. En cada paso se muestra la interacción elegida, es decir, la de menor valor-$p$ entre las que cumplían ambas condiciones, junto con su reducción de devianza respecto del modelo del paso anterior. Como los valores-$p$ son extremadamente pequeños, se reportan en escala $\log_{10}$.
 
 \begin{table}[htbp]
 \centering\small
-\caption{Secuencia de incorporación de interacciones. Las reducciones se refieren al modelo del paso anterior.}
+\caption{Secuencia de incorporación de interacciones. Las reducciones y los valores-$p$ se refieren al modelo del paso anterior.}
 \label{tab:res_pasos}
 \begin{adjustbox}{max width=\linewidth}
 \begin{tabular}{rlrrrr}\toprule
-Paso & Interacción & $q$ & $R_D$ (\%) & $R_D/q$ & $p$ \\\midrule
+Paso & Interacción & $q$ & $R_D$ (\%) & $\log_{10}(\text{valor-}p)$ & Parámetros \\\midrule
 0 & Base & -- & -- & -- & 40 \\
-1 & Temperatura $\times$ Estación & 3 & 20,97 & 6,990 & 43 \\
-2 & Hora $\times$ Día de la semana & 138 & 24,11 & 0,175 & 181 \\
-3 & Hora $\times$ Temperatura & 23 & 12,51 & 0,544 & 204 \\
-4 & Humedad $\times$ Lluvia & 1 & 4,21 & 4,210 & 205 \\
-5 & Hora $\times$ Estación & 69 & 2,35 & 0,034 & 274 \\\bottomrule
+1 & Temperatura $\times$ Estación & 3 & 20,97 & $-433{,}9$ & 43 \\
+2 & Hora $\times$ Día de la semana & 138 & 24,11 & $-401{,}7$ & 181 \\
+3 & Hora $\times$ Temperatura & 23 & 12,51 & $-226{,}9$ & 204 \\
+4 & Humedad $\times$ Lluvia & 1 & 4,21 & $-83{,}3$ & 205 \\
+5 & Hora $\times$ Estación & 69 & 2,35 & $-15{,}1$ & 274 \\\bottomrule
 \end{tabular}
 \end{adjustbox}
 \end{table}
 
+La incorporación de términos se detuvo después de cinco interacciones. La Tabla~\ref{tab:res_restantes} muestra las cinco candidatas que no fueron incorporadas, evaluadas respecto del modelo final. Todas siguen siendo significativas al $5\%$, pero ninguna alcanza una reducción de devianza del $2\%$, por lo que ninguna cumple ambas condiciones.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Candidatas no incorporadas, evaluadas respecto del modelo final.}
+\label{tab:res_restantes}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lrrr}\toprule
+Interacción & $q$ & $R_D$ (\%) & $\log_{10}(\text{valor-}p)$ \\\midrule
+Hora $\times$ Radiación & 14 & 1,70 & $-24{,}2$ \\
+Temperatura $\times$ Radiación & 1 & 1,20 & $-24{,}1$ \\
+Radiación $\times$ Estación & 3 & 0,57 & $-10{,}1$ \\
+Radiación $\times$ Día de la semana & 6 & 0,54 & $-7{,}8$ \\
+Humedad $\times$ Estación & 3 & 0,26 & $-4{,}3$ \\\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+En particular, temperatura--radiación pasó de aportar un $8{,}09\%$ individualmente a un $1{,}20\%$ respecto del modelo final, lo que sugiere que parte de su aporte ya estaba recogido por los términos incorporados. Que todas las candidatas restantes sigan siendo significativas confirma que, con estos datos, el valor-$p$ por sí solo no permite detener la selección, y que el criterio de reducción mínima de devianza es el que determina el tamaño del modelo.
+
+Desde el punto de vista de la parsimonia, temperatura--estación y humedad--lluvia proporcionan mejoras relativamente grandes con pocos parámetros. Por el contrario, hora--estación aporta una reducción del $2{,}35\%$ con 69 parámetros adicionales. En consecuencia, el modelo obtenido mejora el ajuste, pero no se puede afirmar que sea el más parsimonioso.
+
 \newpage
-
-La incorporación de términos se detuvo después de cinco interacciones, pues ninguna de las restantes alcanzó una reducción del $2\%\\$
-En particular, temperatura--radiación pasó de aportar un $8,09\%$ individualmente a un $1,20\%$ respecto del modelo final.$\\$ Esto sugiere que parte de su aporte al ajuste ya estaba recogido por los términos incorporados.
-
-Desde el punto de vista de la parsimonia, temperatura--estación y humedad--lluvia proporcionan mejoras relativamente grandes con pocos parámetros.$\\$
-Por el contrario, hora--estación aporta una reducción del $2,35\%$ con 69 parámetros adicionales. En consecuencia, el modelo obtenido mejora el ajuste, pero no se puede afirmar que sea el más parsimonioso ni que haya sido seleccionado exclusivamente por reducción de devianza por parámetro.
-
 
 \subsection{Modelo seleccionado e interpretación}
 
